@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://qmkcamel.github.io/"/>
-  <updated>2017-03-07T08:03:20.000Z</updated>
+  <updated>2017-03-07T09:58:49.000Z</updated>
   <id>https://qmkcamel.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://qmkcamel.github.io/2017/03/07/Infer%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/"/>
     <id>https://qmkcamel.github.io/2017/03/07/Infer使用笔记/</id>
     <published>2017-03-06T16:00:00.000Z</published>
-    <updated>2017-03-07T08:03:20.000Z</updated>
+    <updated>2017-03-07T09:58:49.000Z</updated>
     
     <content type="html"><![CDATA[<p>Facebook 的 Infer 是一个由 OCaml 编写的静态分析工具。<br>这种查错工具并不是简单纠正一下语法，而是一种代码静态分析工具。它可以在不运行代码（一般开发者的调试方式都是编译、运行，查看结果，然后人工分析代码）的方式下，通过词法分析、语法分析、控制流、数据流分析等技术对程序代码进行扫描，来验证代码是否存在问题或满足技术指标。</p>
 <p>下文示例主要以一个iOS开发者的角度来阐述。</p>
@@ -138,7 +138,7 @@
     <link href="https://qmkcamel.github.io/2016/07/15/App%E6%89%A7%E8%A1%8C%E7%8A%B6%E6%80%81/"/>
     <id>https://qmkcamel.github.io/2016/07/15/App执行状态/</id>
     <published>2016-07-14T16:00:00.000Z</published>
-    <updated>2017-03-07T07:57:12.000Z</updated>
+    <updated>2017-03-07T09:58:52.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="iOS执行状态"><a href="#iOS执行状态" class="headerlink" title="iOS执行状态"></a>iOS执行状态</h2><ul>
 <li>Not running<ul>
@@ -173,9 +173,9 @@
     </summary>
     
     
-      <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
-    
       <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+      <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
     
   </entry>
   
@@ -184,7 +184,7 @@
     <link href="https://qmkcamel.github.io/2016/07/09/Designated%E5%92%8CSecondary(Convenience)%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95/"/>
     <id>https://qmkcamel.github.io/2016/07/09/Designated和Secondary(Convenience)初始化方法/</id>
     <published>2016-07-08T16:00:00.000Z</published>
-    <updated>2017-03-07T07:51:46.000Z</updated>
+    <updated>2017-03-07T09:58:51.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="两步创建"><a href="#两步创建" class="headerlink" title="两步创建"></a>两步创建</h2><p>如下所以，分配内存和初始化对象被分为两步来进行<br><code>[[NSObject alloc] init]</code></p>
 <ul>
@@ -230,7 +230,7 @@
     <link href="https://qmkcamel.github.io/2016/07/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88/"/>
     <id>https://qmkcamel.github.io/2016/07/09/网络协议概览/</id>
     <published>2016-07-08T16:00:00.000Z</published>
-    <updated>2017-03-07T06:12:40.000Z</updated>
+    <updated>2017-03-07T09:58:53.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><h3 id="0-1"><a href="#0-1" class="headerlink" title="0,1"></a>0,1</h3><h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><h3 id="Ethernet（以太网）"><a href="#Ethernet（以太网）" class="headerlink" title="Ethernet（以太网）"></a>Ethernet（以太网）</h3><h3 id="Wifi"><a href="#Wifi" class="headerlink" title="Wifi"></a>Wifi</h3><h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h3 id="ICMP（介于网络层和传输层）"><a href="#ICMP（介于网络层和传输层）" class="headerlink" title="ICMP（介于网络层和传输层）"></a>ICMP（介于网络层和传输层）</h3><p>Internet Control Message Protocol</p>
 <ul>
@@ -536,7 +536,7 @@
     <link href="https://qmkcamel.github.io/2016/07/07/%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
     <id>https://qmkcamel.github.io/2016/07/07/线程池/</id>
     <published>2016-07-06T16:00:00.000Z</published>
-    <updated>2017-03-07T06:30:49.000Z</updated>
+    <updated>2017-03-07T09:58:53.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="工作者线程worker"><a href="#工作者线程worker" class="headerlink" title="工作者线程worker"></a>工作者线程worker</h3><p>线程池中可以重复利用来执行任务的线程，一个worker在其生命周期中会执行多个job。</p>
 <ul>

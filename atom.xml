@@ -180,6 +180,52 @@
   </entry>
   
   <entry>
+    <title>Designated和Secondary(Convenience)初始化方法</title>
+    <link href="https://qmkcamel.github.io/2016/07/09/Designated%E5%92%8CSecondary(Convenience)%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95/"/>
+    <id>https://qmkcamel.github.io/2016/07/09/Designated和Secondary(Convenience)初始化方法/</id>
+    <published>2016-07-08T16:00:00.000Z</published>
+    <updated>2017-03-07T07:51:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="两步创建"><a href="#两步创建" class="headerlink" title="两步创建"></a>两步创建</h2><p>如下所以，分配内存和初始化对象被分为两步来进行<br><code>[[NSObject alloc] init]</code></p>
+<ul>
+<li>alloc 创建对象，分配足够的内存，写入isa指针，初始化引用计数，重置所以实例变量</li>
+<li>init 初始化对象，使对象处于可用的状态。为对象的实例变量赋予合理有用的值</li>
+</ul>
+<h2 id="designated"><a href="#designated" class="headerlink" title="designated"></a>designated</h2><ul>
+<li>只有一个</li>
+<li>提供所有的参数 </li>
+</ul>
+<h3 id="定义一个新类的时候如何做"><a href="#定义一个新类的时候如何做" class="headerlink" title="定义一个新类的时候如何做"></a>定义一个新类的时候如何做</h3><ul>
+<li>不需要重载任何初始化函数</li>
+<li>重载designated initializer</li>
+<li>重新定义一个designated initializer</li>
+</ul>
+<h3 id="需要提供自己的初始化函数时需要怎么做"><a href="#需要提供自己的初始化函数时需要怎么做" class="headerlink" title="需要提供自己的初始化函数时需要怎么做"></a>需要提供自己的初始化函数时需要怎么做</h3><ul>
+<li>定义自己的designated initializer，确保调用了直接超类的designated initializer</li>
+<li>重载直接超类的designated initializer，调用你的新designated initializer</li>
+<li>为新的designated initializer写文档</li>
+</ul>
+<h2 id="secondary"><a href="#secondary" class="headerlink" title="secondary"></a>secondary</h2><ul>
+<li>一个或者多个</li>
+<li>提供一个或者多个默认参数</li>
+<li>需要调用designated方法</li>
+</ul>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">UIView 的 designated initializer 有两个，分别是</div><div class="line">- (instancetype)initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;</div><div class="line">- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;</div><div class="line"></div><div class="line">我们有一个类就叫 MKSubView : UIView </div><div class="line">然后我们在.m 中如果这样来些初始化类的话,.h没有任何说明的话，就会有一些问题，没有重载直接超类的designated initializer </div><div class="line">- （instance）init &#123;</div><div class="line">    if (self = [super init]) &#123;</div><div class="line">        //something to do</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">1. [[MKSubView alloc] initWithFrame:frame]</div><div class="line">2. [MKSubView new]</div><div class="line">3. [[MKSubView alloc] init]</div><div class="line">如果我们用 1 来初始化的话，不会被正确的初始化。</div><div class="line">只有这样 2 或者 3 才会正确执行初始化。</div><div class="line">但是不能保证所以人都认真看了代码，尤其是你做一个这样的类给别人用的时候。</div><div class="line"></div><div class="line">正确方法是直接重载直接父类的designated initializer</div><div class="line"> </div><div class="line">- (instancetype)initWithFrame:(CGRect)frame &#123;</div><div class="line">    if (self = [super initWithFrame:frame]) &#123;</div><div class="line">        //something to do </div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">这样的话调用 1，2，3 就都能保证正常初始化了</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/oa414/objc-zen-book-cn#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B" target="_blank" rel="external">https://github.com/oa414/objc-zen-book-cn#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;两步创建&quot;&gt;&lt;a href=&quot;#两步创建&quot; class=&quot;headerlink&quot; title=&quot;两步创建&quot;&gt;&lt;/a&gt;两步创建&lt;/h2&gt;&lt;p&gt;如下所以，分配内存和初始化对象被分为两步来进行&lt;br&gt;&lt;code&gt;[[NSObject alloc] init]&lt;/code
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>网络协议概览</title>
     <link href="https://qmkcamel.github.io/2016/07/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88/"/>
     <id>https://qmkcamel.github.io/2016/07/09/网络协议概览/</id>
@@ -482,52 +528,6 @@
     
     
       <category term="计算机基础" scheme="https://qmkcamel.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Designated和Secondary(Convenience)初始化方法</title>
-    <link href="https://qmkcamel.github.io/2016/07/09/Designated%E5%92%8CSecondary(Convenience)%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95/"/>
-    <id>https://qmkcamel.github.io/2016/07/09/Designated和Secondary(Convenience)初始化方法/</id>
-    <published>2016-07-08T16:00:00.000Z</published>
-    <updated>2017-03-07T07:51:46.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="两步创建"><a href="#两步创建" class="headerlink" title="两步创建"></a>两步创建</h2><p>如下所以，分配内存和初始化对象被分为两步来进行<br><code>[[NSObject alloc] init]</code></p>
-<ul>
-<li>alloc 创建对象，分配足够的内存，写入isa指针，初始化引用计数，重置所以实例变量</li>
-<li>init 初始化对象，使对象处于可用的状态。为对象的实例变量赋予合理有用的值</li>
-</ul>
-<h2 id="designated"><a href="#designated" class="headerlink" title="designated"></a>designated</h2><ul>
-<li>只有一个</li>
-<li>提供所有的参数 </li>
-</ul>
-<h3 id="定义一个新类的时候如何做"><a href="#定义一个新类的时候如何做" class="headerlink" title="定义一个新类的时候如何做"></a>定义一个新类的时候如何做</h3><ul>
-<li>不需要重载任何初始化函数</li>
-<li>重载designated initializer</li>
-<li>重新定义一个designated initializer</li>
-</ul>
-<h3 id="需要提供自己的初始化函数时需要怎么做"><a href="#需要提供自己的初始化函数时需要怎么做" class="headerlink" title="需要提供自己的初始化函数时需要怎么做"></a>需要提供自己的初始化函数时需要怎么做</h3><ul>
-<li>定义自己的designated initializer，确保调用了直接超类的designated initializer</li>
-<li>重载直接超类的designated initializer，调用你的新designated initializer</li>
-<li>为新的designated initializer写文档</li>
-</ul>
-<h2 id="secondary"><a href="#secondary" class="headerlink" title="secondary"></a>secondary</h2><ul>
-<li>一个或者多个</li>
-<li>提供一个或者多个默认参数</li>
-<li>需要调用designated方法</li>
-</ul>
-<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">UIView 的 designated initializer 有两个，分别是</div><div class="line">- (instancetype)initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;</div><div class="line">- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;</div><div class="line"></div><div class="line">我们有一个类就叫 MKSubView : UIView </div><div class="line">然后我们在.m 中如果这样来些初始化类的话,.h没有任何说明的话，就会有一些问题，没有重载直接超类的designated initializer </div><div class="line">- （instance）init &#123;</div><div class="line">    if (self = [super init]) &#123;</div><div class="line">        //something to do</div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">1. [[MKSubView alloc] initWithFrame:frame]</div><div class="line">2. [MKSubView new]</div><div class="line">3. [[MKSubView alloc] init]</div><div class="line">如果我们用 1 来初始化的话，不会被正确的初始化。</div><div class="line">只有这样 2 或者 3 才会正确执行初始化。</div><div class="line">但是不能保证所以人都认真看了代码，尤其是你做一个这样的类给别人用的时候。</div><div class="line"></div><div class="line">正确方法是直接重载直接父类的designated initializer</div><div class="line"> </div><div class="line">- (instancetype)initWithFrame:(CGRect)frame &#123;</div><div class="line">    if (self = [super initWithFrame:frame]) &#123;</div><div class="line">        //something to do </div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line">这样的话调用 1，2，3 就都能保证正常初始化了</div></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/oa414/objc-zen-book-cn#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B" target="_blank" rel="external">https://github.com/oa414/objc-zen-book-cn#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;两步创建&quot;&gt;&lt;a href=&quot;#两步创建&quot; class=&quot;headerlink&quot; title=&quot;两步创建&quot;&gt;&lt;/a&gt;两步创建&lt;/h2&gt;&lt;p&gt;如下所以，分配内存和初始化对象被分为两步来进行&lt;br&gt;&lt;code&gt;[[NSObject alloc] init]&lt;/code
-    
-    </summary>
-    
-    
-      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
     
   </entry>
   

@@ -82,7 +82,7 @@
 <li><p>unavailable api in support SDK </p>
 <ul>
 <li><p>need pass to Infer the option –iphoneos-target-sdk-version version. </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">infer --iphoneos-target-sdk-version 8.0 --reactive -- xcodebuild -target HelloWorldApp -sdk iphonesimulator</div></pre></td></tr></table></figure>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">infer</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">iphoneos</span><span class="literal">-</span><span class="comment">target</span><span class="literal">-</span><span class="comment">sdk</span><span class="literal">-</span><span class="comment">version</span> <span class="comment">8</span><span class="string">.</span><span class="comment">0</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">reactive</span> <span class="literal">-</span><span class="literal">-</span> <span class="comment">xcodebuild</span> <span class="literal">-</span><span class="comment">target</span> <span class="comment">HelloWorldApp</span> <span class="literal">-</span><span class="comment">sdk</span> <span class="comment">iphonesimulator</span></div></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
@@ -220,9 +220,9 @@
     </summary>
     
     
-      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
-    
       <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
     
   </entry>
   
@@ -231,7 +231,7 @@
     <link href="https://qmkcamel.github.io/2016/07/09/Designated%E5%92%8CSecondary(Convenience)%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95/"/>
     <id>https://qmkcamel.github.io/2016/07/09/Designated和Secondary(Convenience)初始化方法/</id>
     <published>2016-07-08T16:00:00.000Z</published>
-    <updated>2017-03-09T04:31:28.000Z</updated>
+    <updated>2017-03-09T05:05:32.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="两步创建"><a href="#两步创建" class="headerlink" title="两步创建"></a>两步创建</h2><p>如下所以，分配内存和初始化对象被分为两步来进行<br><code>[[NSObject alloc] init]</code></p>
 <ul>

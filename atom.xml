@@ -134,6 +134,48 @@
   </entry>
   
   <entry>
+    <title>软件设计的规则</title>
+    <link href="https://qmkcamel.github.io/2016/08/01/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%8E%9F%E5%88%99/"/>
+    <id>https://qmkcamel.github.io/2016/08/01/软件设计的原则/</id>
+    <published>2016-07-31T16:00:00.000Z</published>
+    <updated>2017-03-10T16:12:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<ol>
+<li>软件的目的是帮助别人。</li>
+<li>相比降低开发成本，更重要的是降低维护的成本。</li>
+<li>变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。</li>
+<li>缺陷定律：程序出现缺陷的可能性，正比于你对他所做修改的程度。</li>
+<li>简洁定律：软件任何一部分的维护难度，正比于该部分的简洁程度。</li>
+<li>测试定律：你对软件行为的了解程度，等与你真正测试他的程度。<br>from <a href="https://book.douban.com/subject/20445258/" target="_blank" rel="external">简约之美</a></li>
+</ol>
+</blockquote>
+<p>在发开经过一段时间之后，随着维护成本的不断提高，越来越感到下面两点的重要性。</p>
+<ul>
+<li>相比降低开发成本，降低维护成本更加重要。</li>
+<li>维护成本正比于系统的复杂程度。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;软件的目的是帮助别人。&lt;/li&gt;
+&lt;li&gt;相比降低开发成本，更重要的是降低维护的成本。&lt;/li&gt;
+&lt;li&gt;变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。&lt;/li&gt;
+&lt;li&gt;缺陷定律：程序出现缺陷的可能性，正比于你对他所
+    
+    </summary>
+    
+    
+      <category term="软件工程" scheme="https://qmkcamel.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
+    
+      <category term="瞎扯" scheme="https://qmkcamel.github.io/tags/%E7%9E%8E%E6%89%AF/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Joel Test</title>
     <link href="https://qmkcamel.github.io/2016/07/28/Joel%20Test/"/>
     <id>https://qmkcamel.github.io/2016/07/28/Joel Test/</id>

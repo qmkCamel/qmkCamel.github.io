@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="App,iOS," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -89,34 +89,31 @@
 
 
 
-<meta name="description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
+<meta name="description" content="为什么要有属性？属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。简单的理解就是，属性是方便生成，操作实例变量的一个手段。
+属性分为四大类 :
 
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
+原子性（atomic,nonatomic）
+读写权限（readwrite,readonly）
+内存管理语义（assign,strong,weak,unsafe_unretain">
 <meta property="og:type" content="article">
-<meta property="og:title" content="App执行状态">
-<meta property="og:url" content="https://qmkcamel.github.io/2016/07/15/App执行状态/index.html">
+<meta property="og:title" content="iOS中属性的解读">
+<meta property="og:url" content="https://qmkcamel.github.io/2016/08/22/iOS中属性的解读/index.html">
 <meta property="og:site_name" content="Camel">
-<meta property="og:description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
+<meta property="og:description" content="为什么要有属性？属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。简单的理解就是，属性是方便生成，操作实例变量的一个手段。
+属性分为四大类 :
 
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
-<meta property="og:updated_time" content="2017-03-07T09:58:52.000Z">
+原子性（atomic,nonatomic）
+读写权限（readwrite,readonly）
+内存管理语义（assign,strong,weak,unsafe_unretain">
+<meta property="og:updated_time" content="2017-03-13T04:24:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="App执行状态">
-<meta name="twitter:description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
+<meta name="twitter:title" content="iOS中属性的解读">
+<meta name="twitter:description" content="为什么要有属性？属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。简单的理解就是，属性是方便生成，操作实例变量的一个手段。
+属性分为四大类 :
 
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
+原子性（atomic,nonatomic）
+读写权限（readwrite,readonly）
+内存管理语义（assign,strong,weak,unsafe_unretain">
 
 
 
@@ -144,13 +141,13 @@ The app is running in the foreground but is currently not receiving events. (It 
 
 
 
-  <link rel="canonical" href="https://qmkcamel.github.io/2016/07/15/App执行状态/"/>
+  <link rel="canonical" href="https://qmkcamel.github.io/2016/08/22/iOS中属性的解读/"/>
 
 
 
 
 
-  <title> App执行状态 | Camel </title>
+  <title> iOS中属性的解读 | Camel </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -278,7 +275,7 @@ The app is running in the foreground but is currently not receiving events. (It 
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/07/15/App执行状态/">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/08/22/iOS中属性的解读/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qmkCamel">
@@ -299,7 +296,7 @@ The app is running in the foreground but is currently not receiving events. (It 
             
             
               
-                App执行状态
+                iOS中属性的解读
               
             
           </h1>
@@ -314,8 +311,8 @@ The app is running in the foreground but is currently not receiving events. (It 
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-15T00:00:00+08:00">
-                2016-07-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-22T00:00:00+08:00">
+                2016-08-22
               </time>
             
 
@@ -333,8 +330,8 @@ The app is running in the foreground but is currently not receiving events. (It 
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/07/15/App执行状态/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/15/App执行状态/" itemprop="commentCount"></span>
+                <a href="/2016/08/22/iOS中属性的解读/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/22/iOS中属性的解读/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -360,28 +357,20 @@ The app is running in the foreground but is currently not receiving events. (It 
       
 
       
-        <h2 id="iOS执行状态"><a href="#iOS执行状态" class="headerlink" title="iOS执行状态"></a>iOS执行状态</h2><ul>
-<li>Not running<ul>
-<li>The app has not been launched or was running but was terminated by the system.</li>
+        <h2 id="为什么要有属性？"><a href="#为什么要有属性？" class="headerlink" title="为什么要有属性？"></a>为什么要有属性？</h2><p>属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。<br>简单的理解就是，属性是方便生成，操作实例变量的一个手段。</p>
+<p>属性分为四大类 :</p>
+<ul>
+<li>原子性（atomic,nonatomic）</li>
+<li>读写权限（readwrite,readonly）</li>
+<li>内存管理语义（assign,strong,weak,unsafe_unretained,copy）</li>
+<li>方法名（getter=name,setter=name）</li>
 </ul>
-</li>
-<li>Inactive<ul>
-<li>The app is running in the foreground but is currently not receiving events. (It may be executing other code though.) An app usually stays in this state only briefly as it transitions to a different state.</li>
-</ul>
-</li>
-<li>Active<ul>
-<li>The app is running in the foreground and is receiving events. This is the normal mode for foreground apps.</li>
-</ul>
-</li>
-<li>Background<ul>
-<li>The app is in the background and executing code. Most apps enter this state briefly on their way to being suspended. However, an app that requests extra execution time may remain in this state for a period of time. In addition, an app being launched directly into the background enters this state instead of the inactive state. For information about how to execute code while in the background, see Background Execution.</li>
-</ul>
-</li>
-<li>Suspended<ul>
-<li>The app is in the background but is not executing code. The system moves apps to this state automatically and does not notify them before doing so. While suspended, an app remains in memory but does not execute any code.<br>When a low-memory condition occurs, the system may purge suspended apps without notice to make more space for the foreground app.</li>
-</ul>
-</li>
-</ul>
+<p>下面分别介绍其中值得注意的地方</p>
+<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><p>atomic原子的，会通过同步锁来保证其原子性，默认值，用原子性比较影响性能，所以一般我们都会用nonatomic。</p>
+<h2 id="读写权限"><a href="#读写权限" class="headerlink" title="读写权限"></a>读写权限</h2><p>readwrite，默认值。一般都不写，编译器会自动生成所修饰属性的getter和setter。<br>readonly，编译器一般会只生成getter。如果我们希望一个属性对外只读，对内可读写，可以在.m的class-continuation分类（是一个匿名分类）中重写为readwrite。</p>
+<h2 id="内存管理语义"><a href="#内存管理语义" class="headerlink" title="内存管理语义"></a>内存管理语义</h2><p>编译器在生成setter方法的时候，要根据这个语义生成不同的代码。不影响getter方法。<br>assign: 设置方法只会执行针对“纯量类型”的简单复制操作，一般都来修饰非对象的类型。在MRC中也用来修饰对象，与现在ARC中的unsafe_unretained语义一样。<br>strong: 拥有关系，setter的时候会先保留新值，释放旧值，然后再将新值设置上去。<br>weak: 非拥有关系，setter的时候既不保留新值，也不释放旧值，在属性所指的对象遭到销毁的时候，属性值也会清空，变为nil。<br>unsafe_unretained: 语义同assign差不多，但是适用于修饰对象类型。非拥有关系（unretained不保留），当所执行的对象遭到销毁的时候，属性值不会自动清空（unsafe）。<br>copy: setter不保留新值，而是将其拷贝（copy）。这里来举例说下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *strongString;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>  ) <span class="built_in">NSString</span> *copiedString;</div><div class="line"></div><div class="line"><span class="comment">//用copy来保证其封装性</span></div><div class="line"><span class="built_in">NSMutableString</span> *mutableString = [[<span class="built_in">NSMutableString</span> alloc] initWithString:<span class="string">@"hello world"</span>];</div><div class="line"><span class="keyword">self</span>.strongString = mutableString;</div><div class="line"><span class="keyword">self</span>.copiedString = mutableString;</div><div class="line"></div><div class="line">(lldb) p mutableString</div><div class="line">(__NSCFString *) $<span class="number">1</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.strongString</div><div class="line">(__NSCFString *) $<span class="number">2</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.copiedString</div><div class="line">(__NSCFString *) $<span class="number">3</span> = <span class="number">0x000060000003a920</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">4</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.copiedString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">5</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isKindOfClass:[objc_getClass(<span class="string">"__NSCFString"</span>) <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">8</span> = <span class="literal">YES</span></div><div class="line">(lldb) p <span class="string">@"hello"</span></div><div class="line">(<span class="built_in">NSTaggedPointerString</span> *) $<span class="number">6</span> = <span class="number">0xa00006f6c6c65685</span> <span class="string">@"hello"</span></div><div class="line"><span class="comment">//stongString的地址和mutableString的地址一样，copiedString地址是新的。</span></div><div class="line"><span class="comment">//有一点值得注意是__NSCFString，很明显NSString下面另有黑幕。随后会详细介绍。</span></div></pre></td></tr></table></figure></p>
+<h2 id="方法名"><a href="#方法名" class="headerlink" title="方法名"></a>方法名</h2><p>getter=<name>: 指定“获取方法”的方法名。常用如下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">getter</span>=isOn) <span class="built_in">BOOL</span> on;</div></pre></td></tr></table></figure></name></p>
+<p>setter=<name>: 指定“设置方法”的方法名。一般不怎么用。</name></p>
 
       
     </div>
@@ -405,8 +394,6 @@ The app is running in the foreground but is currently not receiving events. (It 
       
         <div class="post-tags">
           
-            <a href="/tags/App/" rel="tag"># App</a>
-          
             <a href="/tags/iOS/" rel="tag"># iOS</a>
           
         </div>
@@ -420,8 +407,8 @@ The app is running in the foreground but is currently not receiving events. (It 
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/09/Designated和Secondary(Convenience)初始化方法/" rel="next" title="Designated和Secondary(Convenience)初始化方法">
-                <i class="fa fa-chevron-left"></i> Designated和Secondary(Convenience)初始化方法
+              <a href="/2016/08/01/软件设计的原则/" rel="next" title="软件设计的规则">
+                <i class="fa fa-chevron-left"></i> 软件设计的规则
               </a>
             
           </div>
@@ -430,8 +417,8 @@ The app is running in the foreground but is currently not receiving events. (It 
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/07/28/Joel Test/" rel="prev" title="Joel Test">
-                Joel Test <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/07/Infer使用笔记/" rel="prev" title="Infer 使用笔记">
+                Infer 使用笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -458,8 +445,8 @@ The app is running in the foreground but is currently not receiving events. (It 
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/15/App执行状态/"
-           data-title="App执行状态" data-url="https://qmkcamel.github.io/2016/07/15/App执行状态/">
+      <div class="ds-thread" data-thread-key="2016/08/22/iOS中属性的解读/"
+           data-title="iOS中属性的解读" data-url="https://qmkcamel.github.io/2016/08/22/iOS中属性的解读/">
       </div>
     
   </div>
@@ -563,7 +550,7 @@ The app is running in the foreground but is currently not receiving events. (It 
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS执行状态"><span class="nav-number">1.</span> <span class="nav-text">iOS执行状态</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有属性？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有属性？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原子性"><span class="nav-number">2.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写权限"><span class="nav-number">3.</span> <span class="nav-text">读写权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存管理语义"><span class="nav-number">4.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法名"><span class="nav-number">5.</span> <span class="nav-text">方法名</span></a></li></ol></div>
             
 
           </div>

@@ -134,6 +134,40 @@
   </entry>
   
   <entry>
+    <title>iOS中属性的解读</title>
+    <link href="https://qmkcamel.github.io/2016/08/22/iOS%E4%B8%AD%E5%B1%9E%E6%80%A7%E7%9A%84%E8%A7%A3%E8%AF%BB/"/>
+    <id>https://qmkcamel.github.io/2016/08/22/iOS中属性的解读/</id>
+    <published>2016-08-21T16:00:00.000Z</published>
+    <updated>2017-03-13T04:24:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="为什么要有属性？"><a href="#为什么要有属性？" class="headerlink" title="为什么要有属性？"></a>为什么要有属性？</h2><p>属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。<br>简单的理解就是，属性是方便生成，操作实例变量的一个手段。</p>
+<p>属性分为四大类 :</p>
+<ul>
+<li>原子性（atomic,nonatomic）</li>
+<li>读写权限（readwrite,readonly）</li>
+<li>内存管理语义（assign,strong,weak,unsafe_unretained,copy）</li>
+<li>方法名（getter=name,setter=name）</li>
+</ul>
+<p>下面分别介绍其中值得注意的地方</p>
+<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><p>atomic原子的，会通过同步锁来保证其原子性，默认值，用原子性比较影响性能，所以一般我们都会用nonatomic。</p>
+<h2 id="读写权限"><a href="#读写权限" class="headerlink" title="读写权限"></a>读写权限</h2><p>readwrite，默认值。一般都不写，编译器会自动生成所修饰属性的getter和setter。<br>readonly，编译器一般会只生成getter。如果我们希望一个属性对外只读，对内可读写，可以在.m的class-continuation分类（是一个匿名分类）中重写为readwrite。</p>
+<h2 id="内存管理语义"><a href="#内存管理语义" class="headerlink" title="内存管理语义"></a>内存管理语义</h2><p>编译器在生成setter方法的时候，要根据这个语义生成不同的代码。不影响getter方法。<br>assign: 设置方法只会执行针对“纯量类型”的简单复制操作，一般都来修饰非对象的类型。在MRC中也用来修饰对象，与现在ARC中的unsafe_unretained语义一样。<br>strong: 拥有关系，setter的时候会先保留新值，释放旧值，然后再将新值设置上去。<br>weak: 非拥有关系，setter的时候既不保留新值，也不释放旧值，在属性所指的对象遭到销毁的时候，属性值也会清空，变为nil。<br>unsafe_unretained: 语义同assign差不多，但是适用于修饰对象类型。非拥有关系（unretained不保留），当所执行的对象遭到销毁的时候，属性值不会自动清空（unsafe）。<br>copy: setter不保留新值，而是将其拷贝（copy）。这里来举例说下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *strongString;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>  ) <span class="built_in">NSString</span> *copiedString;</div><div class="line"></div><div class="line"><span class="comment">//用copy来保证其封装性</span></div><div class="line"><span class="built_in">NSMutableString</span> *mutableString = [[<span class="built_in">NSMutableString</span> alloc] initWithString:<span class="string">@"hello world"</span>];</div><div class="line"><span class="keyword">self</span>.strongString = mutableString;</div><div class="line"><span class="keyword">self</span>.copiedString = mutableString;</div><div class="line"></div><div class="line">(lldb) p mutableString</div><div class="line">(__NSCFString *) $<span class="number">1</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.strongString</div><div class="line">(__NSCFString *) $<span class="number">2</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.copiedString</div><div class="line">(__NSCFString *) $<span class="number">3</span> = <span class="number">0x000060000003a920</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">4</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.copiedString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">5</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isKindOfClass:[objc_getClass(<span class="string">"__NSCFString"</span>) <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">8</span> = <span class="literal">YES</span></div><div class="line">(lldb) p <span class="string">@"hello"</span></div><div class="line">(<span class="built_in">NSTaggedPointerString</span> *) $<span class="number">6</span> = <span class="number">0xa00006f6c6c65685</span> <span class="string">@"hello"</span></div><div class="line"><span class="comment">//stongString的地址和mutableString的地址一样，copiedString地址是新的。</span></div><div class="line"><span class="comment">//有一点值得注意是__NSCFString，很明显NSString下面另有黑幕。随后会详细介绍。</span></div></pre></td></tr></table></figure></p>
+<h2 id="方法名"><a href="#方法名" class="headerlink" title="方法名"></a>方法名</h2><p>getter=<name>: 指定“获取方法”的方法名。常用如下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">getter</span>=isOn) <span class="built_in">BOOL</span> on;</div></pre></td></tr></table></figure></name></p>
+<p>setter=<name>: 指定“设置方法”的方法名。一般不怎么用。</name></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;为什么要有属性？&quot;&gt;&lt;a href=&quot;#为什么要有属性？&quot; class=&quot;headerlink&quot; title=&quot;为什么要有属性？&quot;&gt;&lt;/a&gt;为什么要有属性？&lt;/h2&gt;&lt;p&gt;属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>软件设计的规则</title>
     <link href="https://qmkcamel.github.io/2016/08/01/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%8E%9F%E5%88%99/"/>
     <id>https://qmkcamel.github.io/2016/08/01/软件设计的原则/</id>
@@ -262,9 +296,9 @@
     </summary>
     
     
-      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
-    
       <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
     
   </entry>
   

@@ -1,0 +1,741 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Camel" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="概念
+浅复制 : 并不拷贝对象，只是拷贝指向对象的指针。简单来说就是指针拷贝。
+深复制 : 直接拷贝整个对象内存到另一块内存中。简单来说就是内容拷贝。
+
+非集合对象12345678910- (void)nonCollectionObjectCopy &amp;#123;    NSString *string = @&quot;string&quot;;    NSMutableString *mutableString =">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中的深复制和浅复制解读">
+<meta property="og:url" content="https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/index.html">
+<meta property="og:site_name" content="Camel">
+<meta property="og:description" content="概念
+浅复制 : 并不拷贝对象，只是拷贝指向对象的指针。简单来说就是指针拷贝。
+深复制 : 直接拷贝整个对象内存到另一块内存中。简单来说就是内容拷贝。
+
+非集合对象12345678910- (void)nonCollectionObjectCopy &amp;#123;    NSString *string = @&quot;string&quot;;    NSMutableString *mutableString =">
+<meta property="og:updated_time" content="2017-03-14T07:20:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中的深复制和浅复制解读">
+<meta name="twitter:description" content="概念
+浅复制 : 并不拷贝对象，只是拷贝指向对象的指针。简单来说就是指针拷贝。
+深复制 : 直接拷贝整个对象内存到另一块内存中。简单来说就是内容拷贝。
+
+非集合对象12345678910- (void)nonCollectionObjectCopy &amp;#123;    NSString *string = @&quot;string&quot;;    NSMutableString *mutableString =">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/"/>
+
+
+
+
+
+  <title> iOS中的深复制和浅复制解读 | Camel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=61096979";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Camel</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">qmk</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qmkCamel">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Camel">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS中的深复制和浅复制解读
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-10T00:00:00+08:00">
+                2016-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/09/10/iOS中的深复制和浅复制解读/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/10/iOS中的深复制和浅复制解读/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li><strong>浅复制</strong> : 并不拷贝对象，只是拷贝指向对象的指针。简单来说就是<code>指针拷贝</code>。</li>
+<li><strong>深复制</strong> : 直接拷贝整个对象内存到另一块内存中。简单来说就是<code>内容拷贝</code>。</li>
+</ul>
+<h2 id="非集合对象"><a href="#非集合对象" class="headerlink" title="非集合对象"></a>非集合对象</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)nonCollectionObjectCopy &#123;</div><div class="line">    <span class="built_in">NSString</span> *string = <span class="string">@"string"</span>;</div><div class="line">    <span class="built_in">NSMutableString</span> *mutableString = [[<span class="built_in">NSMutableString</span> alloc] initWithString:<span class="string">@"mutableString"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *stringCopy = [string <span class="keyword">copy</span>];</div><div class="line">    <span class="built_in">NSMutableString</span> *stringMutableCopy = [string mutableCopy];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *mutableStringCopy = [mutableString <span class="keyword">copy</span>];</div><div class="line">    <span class="built_in">NSMutableString</span> *mutableStringMutableCopy = [mutableString mutableCopy];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">//</span>    (lldb) p string</div><div class="line"><span class="regexp">//</span>    (__NSCFConstantString *) <span class="variable">$1</span> = <span class="number">0</span>x000000010aeeade0 @<span class="string">"string"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableString</div><div class="line"><span class="regexp">//</span>    (__NSCFString *) <span class="variable">$2</span> = <span class="number">0</span>x0000608000266380 @<span class="string">"mutableString"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p stringCopy</div><div class="line"><span class="regexp">//</span>    (__NSCFConstantString *) <span class="variable">$3</span> = <span class="number">0</span>x000000010aeeade0 @<span class="string">"string"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p stringMutableCopy</div><div class="line"><span class="regexp">//</span>    (__NSCFString *) <span class="variable">$4</span> = <span class="number">0</span>x00006080002673c0 @<span class="string">"string"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableStringCopy</div><div class="line"><span class="regexp">//</span>    (__NSCFString *) <span class="variable">$5</span> = <span class="number">0</span>x000060800023c8a0 @<span class="string">"mutableString"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableStringMutableCopy</div><div class="line"><span class="regexp">//</span>    (__NSCFString *) <span class="variable">$6</span> = <span class="number">0</span>x0000608000266300 @<span class="string">"mutableString"</span></div></pre></td></tr></table></figure>
+<p>结论如下：</p>
+<ul>
+<li><code>[immutableObject copy]</code> // 浅复制</li>
+<li><code>[immutableObject mutableCopy]</code> //深复制</li>
+<li><code>[mutableObject copy]</code> //深复制</li>
+<li><code>[mutableObject mutableCopy]</code> //深复制</li>
+</ul>
+<p>PS ：<br><code>__NSCFConstantString</code>和 <code>__NSCFString</code>都是掩藏在NSString下的类。如果我们直接用语法糖来生成NSString的话，编译器会做一些优化，让静态字符都保存在一个段内。这是大部分编译器都会做的事情。</p>
+<h2 id="集合对象"><a href="#集合对象" class="headerlink" title="集合对象"></a>集合对象</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)collectionObjectCopy &#123;</div><div class="line">    <span class="built_in">NSArray</span> *array = @[<span class="string">@"A"</span>,<span class="string">@"B"</span>];</div><div class="line">    <span class="built_in">NSMutableArray</span> *mutableArray = [[<span class="built_in">NSMutableArray</span> alloc] initWithArray:@[<span class="string">@"A"</span>,<span class="string">@"B"</span>]];</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *arrayCopy = [array <span class="keyword">copy</span>];</div><div class="line">    <span class="built_in">NSArray</span> *arrayMutableCopy = [array mutableCopy];</div><div class="line">    </div><div class="line">    <span class="built_in">NSArray</span> *mutableArrayCopy = [mutableArray <span class="keyword">copy</span>];</div><div class="line">    <span class="built_in">NSArray</span> *mutableArrayMutableCopy = [mutableArray mutableCopy]; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">//</span>    (lldb) p array</div><div class="line"><span class="regexp">//</span>    (__NSArrayI *) <span class="variable">$7</span> = <span class="number">0</span>x000060800023c340 @<span class="string">"2 elements"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableArray</div><div class="line"><span class="regexp">//</span>    (__NSArrayM *) <span class="variable">$8</span> = <span class="number">0</span>x000060800005d460 @<span class="string">"2 elements"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p arrayCopy</div><div class="line"><span class="regexp">//</span>    (__NSArrayI *) <span class="variable">$9</span> = <span class="number">0</span>x000060800023c340 @<span class="string">"2 elements"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p arrayMutableCopy</div><div class="line"><span class="regexp">//</span>    (__NSArrayM *) <span class="variable">$10</span> = <span class="number">0</span>x000060800005fce0 @<span class="string">"2 elements"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableArrayCopy</div><div class="line"><span class="regexp">//</span>    (__NSArrayI *) <span class="variable">$11</span> = <span class="number">0</span>x000060800023c120 @<span class="string">"2 elements"</span></div><div class="line"><span class="regexp">//</span>    (lldb) p mutableArrayMutableCopy</div><div class="line"><span class="regexp">//</span>    (__NSArrayM *) <span class="variable">$12</span> = <span class="number">0</span>x000060800005da30 @<span class="string">"2 elements"</span></div><div class="line"></div><div class="line"><span class="regexp">//</span> 集合中的内容还是指针拷贝</div><div class="line">(lldb) p array[<span class="number">0</span>]</div><div class="line">(__NSCFConstantString *) <span class="variable">$17</span> = <span class="number">0</span>x000000010aeeafa0 @<span class="string">"A"</span></div><div class="line">(lldb) p array[<span class="number">1</span>]</div><div class="line">(__NSCFConstantString *) <span class="variable">$18</span> = <span class="number">0</span>x000000010aeeafc0 @<span class="string">"B"</span></div><div class="line">(lldb) p arrayMutableCopy[<span class="number">0</span>]</div><div class="line">(__NSCFConstantString *) <span class="variable">$19</span> = <span class="number">0</span>x000000010aeeafa0 @<span class="string">"A"</span></div><div class="line">(lldb) p arrayMutableCopy[<span class="number">1</span>]</div><div class="line">(__NSCFConstantString *) <span class="variable">$20</span> = <span class="number">0</span>x000000010aeeafc0 @<span class="string">"B"</span></div><div class="line">(lldb)</div></pre></td></tr></table></figure>
+<p>结论如下：</p>
+<ul>
+<li><code>[immutableObject copy]</code> // 浅复制</li>
+<li><code>[immutableObject mutableCopy]</code> //单层深复制</li>
+<li><code>[mutableObject copy]</code> //单层深复制</li>
+<li><code>[mutableObject mutableCopy]</code> //单层深复制</li>
+</ul>
+<h2 id="集合对象的完全深复制"><a href="#集合对象的完全深复制" class="headerlink" title="集合对象的完全深复制"></a>集合对象的完全深复制</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)collectionObjectCompletelyCopy &#123;</div><div class="line">    <span class="built_in">NSArray</span> *array = @[<span class="string">@"A"</span>,<span class="string">@"B"</span>];</div><div class="line">    <span class="built_in">NSMutableArray</span> *arrayCompletelyCopy = [[<span class="built_in">NSMutableArray</span> alloc] initWithArray:array copyItems:<span class="literal">YES</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSDictionary</span> *dic = @&#123;<span class="string">@"key"</span>:<span class="string">@"value"</span>&#125;;</div><div class="line">    <span class="built_in">NSMutableDictionary</span> *dicCompeletelyMutableCopy = [[<span class="built_in">NSMutableDictionary</span> alloc] initWithDictionary:dic copyItems:<span class="literal">YES</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样的话，collection对象的内容也是深复制</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://github.com/ChenYilong/iOSInterviewQuestions/blob/master/01%E3%80%8A%E6%8B%9B%E8%81%98%E4%B8%80%E4%B8%AA%E9%9D%A0%E8%B0%B1%E7%9A%84iOS%E3%80%8B%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88/%E3%80%8A%E6%8B%9B%E8%81%98%E4%B8%80%E4%B8%AA%E9%9D%A0%E8%B0%B1%E7%9A%84iOS%E3%80%8B%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88%EF%BC%88%E4%B8%8A%EF%BC%89.md#13-用property声明的nsstring或nsarraynsdictionary经常使用copy关键字为什么如果改用strong关键字可能造成什么问题" target="_blank" rel="external">招聘一个靠谱的iOS</a></li>
+<li><a href="https://www.zybuluo.com/MicroCai/note/50592" target="_blank" rel="external">iOS集合的深复制和浅复制</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/22/iOS中属性的解读/" rel="next" title="iOS中属性的解读">
+                <i class="fa fa-chevron-left"></i> iOS中属性的解读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/07/Infer使用笔记/" rel="prev" title="Infer 使用笔记">
+                Infer 使用笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/10/iOS中的深复制和浅复制解读/"
+           data-title="iOS中的深复制和浅复制解读" data-url="https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="qmkCamel" />
+          <p class="site-author-name" itemprop="name">qmkCamel</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非集合对象"><span class="nav-number">2.</span> <span class="nav-text">非集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象"><span class="nav-number">3.</span> <span class="nav-text">集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象的完全深复制"><span class="nav-number">4.</span> <span class="nav-text">集合对象的完全深复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qmkCamel</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"qmkcamel"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,748 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Camel" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="+(void)load
+程序启动的时候会调用
+load 方法会在每一个类和分类被引入时仅调用一次,调用的顺序：父类优先于子类, 子类优先于分类（父类&amp;gt;子类&amp;gt;分类）
+load 方法不会被类自动继承，如果一个类本身没有实现 load 方法，不管其各级超类是否实现，系统都不会调用
+
+凡是想通过load在类加载之前执行某些任务的，基本都做的不太对。其真正的用途是用来调试程序，比如看某个分类是否">
+<meta property="og:type" content="article">
+<meta property="og:title" content="+load 和 +initialize 的区别是什么？">
+<meta property="og:url" content="https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/index.html">
+<meta property="og:site_name" content="Camel">
+<meta property="og:description" content="+(void)load
+程序启动的时候会调用
+load 方法会在每一个类和分类被引入时仅调用一次,调用的顺序：父类优先于子类, 子类优先于分类（父类&amp;gt;子类&amp;gt;分类）
+load 方法不会被类自动继承，如果一个类本身没有实现 load 方法，不管其各级超类是否实现，系统都不会调用
+
+凡是想通过load在类加载之前执行某些任务的，基本都做的不太对。其真正的用途是用来调试程序，比如看某个分类是否">
+<meta property="og:updated_time" content="2017-03-22T06:59:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="+load 和 +initialize 的区别是什么？">
+<meta name="twitter:description" content="+(void)load
+程序启动的时候会调用
+load 方法会在每一个类和分类被引入时仅调用一次,调用的顺序：父类优先于子类, 子类优先于分类（父类&amp;gt;子类&amp;gt;分类）
+load 方法不会被类自动继承，如果一个类本身没有实现 load 方法，不管其各级超类是否实现，系统都不会调用
+
+凡是想通过load在类加载之前执行某些任务的，基本都做的不太对。其真正的用途是用来调试程序，比如看某个分类是否">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/"/>
+
+
+
+
+
+  <title> +load 和 +initialize 的区别是什么？ | Camel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=61096979";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Camel</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">qmk</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qmkCamel">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Camel">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                +load 和 +initialize 的区别是什么？
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-26T00:00:00+08:00">
+                2016-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/09/26/load和initialize的区别是什么/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/load和initialize的区别是什么/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="void-load"><a href="#void-load" class="headerlink" title="+(void)load"></a>+(void)load</h2><ul>
+<li>程序启动的时候会调用</li>
+<li>load 方法会在每一个类和分类被引入时仅调用一次,调用的顺序：父类优先于子类, 子类优先于分类（父类&gt;子类&gt;分类）</li>
+<li><p>load 方法不会被类自动继承，如果一个类本身没有实现 load 方法，不管其各级超类是否实现，系统都不会调用</p>
+<blockquote>
+<p>凡是想通过load在类加载之前执行某些任务的，基本都做的不太对。其真正的用途是用来调试程序，比如看某个分类是否被正常加载，可以在 load 里面判断。（Effitive Objective-C）</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="void-initialize"><a href="#void-initialize" class="headerlink" title="+(void)initialize"></a>+(void)initialize</h2><ul>
+<li>在第一次使用这个类的时候运行期系统会调用这个方法，是“惰性调用”</li>
+<li>运行期系统在执行这个方法的时候，是处于正常状态，而且是线程安全的，也就是说只有执行 initialize的线程可以操作类或者实例，其他线程需要先阻塞，等着 initialize 先执行完</li>
+<li>initialize 方法遵循继承体系，如果某个类没有实现它，而超类实现了的话，就会执行超类的方法。比如下面的例子<blockquote>
+<p><code>initialize</code>方法只应该来设置内部数据，不应该在其中调用别的方法，即使是本类自己的方法，也最好别调用。（Effective Objective-C）</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamBaseClass</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@end</span> </div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span></span></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamSubClass</span> : <span class="title">CamBaseClass</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line">首次使用 CamSubClass 初始化的时候控制台输出如下。</div><div class="line">CamBaseClass initialize</div><div class="line">CamSubClass initialize</div></pre></td></tr></table></figure>
+<p>如果想避免上面的情况，只要自己指定的类执行，最佳实践如下</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> == [CamBaseClass <span class="keyword">class</span>]) &#123;</div><div class="line">        <span class="built_in">NSLog</span> (<span class="string">@"%@ initialize"</span>, <span class="keyword">self</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="为什么两个方法的实现代码要精简？"><a href="#为什么两个方法的实现代码要精简？" class="headerlink" title="为什么两个方法的实现代码要精简？"></a>为什么两个方法的实现代码要精简？</h2><p>+(void)load 和 +(void)initialize 方法的实现要尽量精简。在里面设置一些状态，使本类能够正常运作就可以了，不要执行那种耗时太久或需要加锁的任务。</p>
+<p><code>load</code>的原因如下</p>
+<ul>
+<li>无法确定<code>load</code>的顺序，如果依赖别的类的话，会出现别的类没有load完成的情况发生</li>
+<li><code>load</code>的时候整个程序都会都会阻塞，如果复杂的话，会造成没有相应</li>
+</ul>
+<p><code>initialize</code>的原因如下</p>
+<ul>
+<li>不能确定初始化是在什么线程执行，如果是在UI线程上，耗时操作会引起挂起</li>
+<li>无法控制类的初始化时机</li>
+<li>如果很复杂的话，会直接或间接的用到别的类。如果所依赖的类正好依赖本类的某些数据，而本类还没有初始化。就会有错误出现。举个例子</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *CamClassAInternalString;</div><div class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *CamClassBInternalString;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamClassA</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CamClassA</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    debugLog(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">    CamClassAInternalString = <span class="string">@"在CamClassA的Initialize中完成"</span>;</div><div class="line">    debugLog(<span class="string">@" %@ "</span>,CamClassAInternalString);</div><div class="line">    debugLog(<span class="string">@" %@ "</span>,CamClassBInternalString);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamClassB</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CamClassB</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    debugLog(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">    CamClassBInternalString = <span class="string">@"在CamClassB的initialize中完成"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line">CamClassA *classA = [[CamClassA alloc] init];</div><div class="line">CamCalssB *classB = [[CamClassB alloc] init];</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/10/iOS中的深复制和浅复制解读/" rel="next" title="iOS中的深复制和浅复制解读">
+                <i class="fa fa-chevron-left"></i> iOS中的深复制和浅复制解读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/07/Infer使用笔记/" rel="prev" title="Infer 使用笔记">
+                Infer 使用笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/26/load和initialize的区别是什么/"
+           data-title="+load 和 +initialize 的区别是什么？" data-url="https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="qmkCamel" />
+          <p class="site-author-name" itemprop="name">qmkCamel</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#void-load"><span class="nav-number">1.</span> <span class="nav-text">+(void)load</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#void-initialize"><span class="nav-number">2.</span> <span class="nav-text">+(void)initialize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么两个方法的实现代码要精简？"><span class="nav-number">3.</span> <span class="nav-text">为什么两个方法的实现代码要精简？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qmkCamel</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"qmkcamel"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

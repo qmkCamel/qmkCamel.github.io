@@ -134,6 +134,61 @@
   </entry>
   
   <entry>
+    <title>+load 和 +initialize 的区别是什么？</title>
+    <link href="https://qmkcamel.github.io/2016/09/26/load%E5%92%8Cinitialize%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88/"/>
+    <id>https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/</id>
+    <published>2016-09-25T16:00:00.000Z</published>
+    <updated>2017-03-22T06:59:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="void-load"><a href="#void-load" class="headerlink" title="+(void)load"></a>+(void)load</h2><ul>
+<li>程序启动的时候会调用</li>
+<li>load 方法会在每一个类和分类被引入时仅调用一次,调用的顺序：父类优先于子类, 子类优先于分类（父类&gt;子类&gt;分类）</li>
+<li><p>load 方法不会被类自动继承，如果一个类本身没有实现 load 方法，不管其各级超类是否实现，系统都不会调用</p>
+<blockquote>
+<p>凡是想通过load在类加载之前执行某些任务的，基本都做的不太对。其真正的用途是用来调试程序，比如看某个分类是否被正常加载，可以在 load 里面判断。（Effitive Objective-C）</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="void-initialize"><a href="#void-initialize" class="headerlink" title="+(void)initialize"></a>+(void)initialize</h2><ul>
+<li>在第一次使用这个类的时候运行期系统会调用这个方法，是“惰性调用”</li>
+<li>运行期系统在执行这个方法的时候，是处于正常状态，而且是线程安全的，也就是说只有执行 initialize的线程可以操作类或者实例，其他线程需要先阻塞，等着 initialize 先执行完</li>
+<li>initialize 方法遵循继承体系，如果某个类没有实现它，而超类实现了的话，就会执行超类的方法。比如下面的例子<blockquote>
+<p><code>initialize</code>方法只应该来设置内部数据，不应该在其中调用别的方法，即使是本类自己的方法，也最好别调用。（Effective Objective-C）</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamBaseClass</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@end</span> </div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span></span></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamSubClass</span> : <span class="title">CamBaseClass</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line">首次使用 CamSubClass 初始化的时候控制台输出如下。</div><div class="line">CamBaseClass initialize</div><div class="line">CamSubClass initialize</div></pre></td></tr></table></figure>
+<p>如果想避免上面的情况，只要自己指定的类执行，最佳实践如下</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> == [CamBaseClass <span class="keyword">class</span>]) &#123;</div><div class="line">        <span class="built_in">NSLog</span> (<span class="string">@"%@ initialize"</span>, <span class="keyword">self</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="为什么两个方法的实现代码要精简？"><a href="#为什么两个方法的实现代码要精简？" class="headerlink" title="为什么两个方法的实现代码要精简？"></a>为什么两个方法的实现代码要精简？</h2><p>+(void)load 和 +(void)initialize 方法的实现要尽量精简。在里面设置一些状态，使本类能够正常运作就可以了，不要执行那种耗时太久或需要加锁的任务。</p>
+<p><code>load</code>的原因如下</p>
+<ul>
+<li>无法确定<code>load</code>的顺序，如果依赖别的类的话，会出现别的类没有load完成的情况发生</li>
+<li><code>load</code>的时候整个程序都会都会阻塞，如果复杂的话，会造成没有相应</li>
+</ul>
+<p><code>initialize</code>的原因如下</p>
+<ul>
+<li>不能确定初始化是在什么线程执行，如果是在UI线程上，耗时操作会引起挂起</li>
+<li>无法控制类的初始化时机</li>
+<li>如果很复杂的话，会直接或间接的用到别的类。如果所依赖的类正好依赖本类的某些数据，而本类还没有初始化。就会有错误出现。举个例子</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *CamClassAInternalString;</div><div class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *CamClassBInternalString;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamClassA</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CamClassA</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    debugLog(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">    CamClassAInternalString = <span class="string">@"在CamClassA的Initialize中完成"</span>;</div><div class="line">    debugLog(<span class="string">@" %@ "</span>,CamClassAInternalString);</div><div class="line">    debugLog(<span class="string">@" %@ "</span>,CamClassBInternalString);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">CamClassB</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">CamClassB</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)initialize &#123;</div><div class="line">    debugLog(<span class="string">@"%@ initialize"</span>,<span class="keyword">self</span>);</div><div class="line">    CamClassBInternalString = <span class="string">@"在CamClassB的initialize中完成"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line">CamClassA *classA = [[CamClassA alloc] init];</div><div class="line">CamCalssB *classB = [[CamClassB alloc] init];</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;void-load&quot;&gt;&lt;a href=&quot;#void-load&quot; class=&quot;headerlink&quot; title=&quot;+(void)load&quot;&gt;&lt;/a&gt;+(void)load&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;程序启动的时候会调用&lt;/li&gt;
+&lt;li&gt;load 方法会在每一个
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS中的深复制和浅复制解读</title>
     <link href="https://qmkcamel.github.io/2016/09/10/iOS%E4%B8%AD%E7%9A%84%E6%B7%B1%E5%A4%8D%E5%88%B6%E5%92%8C%E6%B5%85%E5%A4%8D%E5%88%B6%E8%A7%A3%E8%AF%BB/"/>
     <id>https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/</id>
@@ -403,9 +458,13 @@
     <link href="https://qmkcamel.github.io/2016/07/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88/"/>
     <id>https://qmkcamel.github.io/2016/07/09/网络协议概览/</id>
     <published>2016-07-08T16:00:00.000Z</published>
-    <updated>2017-03-07T09:58:53.000Z</updated>
+    <updated>2017-03-14T14:12:15.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><h3 id="0-1"><a href="#0-1" class="headerlink" title="0,1"></a>0,1</h3><h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><h3 id="Ethernet（以太网）"><a href="#Ethernet（以太网）" class="headerlink" title="Ethernet（以太网）"></a>Ethernet（以太网）</h3><h3 id="Wifi"><a href="#Wifi" class="headerlink" title="Wifi"></a>Wifi</h3><h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h3 id="ICMP（介于网络层和传输层）"><a href="#ICMP（介于网络层和传输层）" class="headerlink" title="ICMP（介于网络层和传输层）"></a>ICMP（介于网络层和传输层）</h3><p>Internet Control Message Protocol</p>
+    <content type="html"><![CDATA[<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。</p>
+<h3 id="0-1"><a href="#0-1" class="headerlink" title="0,1"></a>0,1</h3><p>针对特定的媒介，设备可以有相应的接口，用来接收物理信号。随后利用物理层的协议可以把物理信号转化为0/1序列。</p>
+<h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><p>在连接层中把0/1序列分成帧（frame）。帧是一段有序的0，1序列。连接层规定了帧的格式，确定特殊的0/1序列为帧的起始和结束，帧中还包含送信地址和收信地址，还有能够探测错误的校验序列，当然最重要的肯定是payload和相应的类型。连接层不关心传输的数据内容，只是像一个信封一样把数据包裹起来。帧的收信地址只能是局域网里地址，连接层更像是一个社区的邮差，更远的需要依赖高层的协议。</p>
+<h3 id="Ethernet（以太网）"><a href="#Ethernet（以太网）" class="headerlink" title="Ethernet（以太网）"></a>Ethernet（以太网）</h3><h3 id="Wifi"><a href="#Wifi" class="headerlink" title="Wifi"></a>Wifi</h3><h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>网络层的目的就是为了让不同的“社区”之间通信。比如我们希望WiFi局域网上的一台计算机和以太网上的一台计算通信，那么就需要有能从物理层上在两个网络之间发送和接收0/1序列，并能理解多种帧格式的“中间人”。路由器就是为了这个而产生的“中间设备”。</p>
+<h3 id="ICMP（介于网络层和传输层）"><a href="#ICMP（介于网络层和传输层）" class="headerlink" title="ICMP（介于网络层和传输层）"></a>ICMP（介于网络层和传输层）</h3><p>Internet Control Message Protocol</p>
 <ul>
 <li><p>回音(echo)<br>ping 命令</p>
 </li>
@@ -695,7 +754,8 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;物理层&quot;&gt;&lt;a href=&quot;#物理层&quot; class=&quot;headerlink&quot; title=&quot;物理层&quot;&gt;&lt;/a&gt;物理层&lt;/h2&gt;&lt;h3 id=&quot;0-1&quot;&gt;&lt;a href=&quot;#0-1&quot; class=&quot;headerlink&quot; title=&quot;0,1&quot;&gt;&lt;/a&gt;0,1&lt;/h
+      &lt;h2 id=&quot;物理层&quot;&gt;&lt;a href=&quot;#物理层&quot; class=&quot;headerlink&quot; title=&quot;物理层&quot;&gt;&lt;/a&gt;物理层&lt;/h2&gt;&lt;p&gt;物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。&lt;/p&gt;
+&lt;h3 id=&quot;0-1&quot;&gt;&lt;a href=&quot;
     
     </summary>
     

@@ -89,46 +89,22 @@
 
 
 
-<meta name="description" content="物理层0,1连接层Ethernet（以太网）WifiARP网络层ICMP（介于网络层和传输层）Internet Control Message Protocol
-
-回音(echo)ping 命令
-
-源头冷却(source quench)
-
-目的地无法到达(destination unreachable)
-
-超时(tiem exceeded)traceroute 用这种类型
-
-重新定向(redire">
+<meta name="description" content="物理层物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。
+0,1针对特定的媒介，设备可以有相应的接口，用来接收物理信号。随后利用物理层的协议可以把物理信号转化为0/1序列。
+连接层在连接层中把0/1序列分成帧（frame）。帧是一段有序的0，1序列。连接层规定了帧的格式，确定特殊的0/1序列为帧的起始和结束，帧中还包含送信地址和收信地址，还有能够探测错误的校验序列，当然">
 <meta property="og:type" content="article">
 <meta property="og:title" content="网络协议概览">
 <meta property="og:url" content="https://qmkcamel.github.io/2016/07/09/网络协议概览/index.html">
 <meta property="og:site_name" content="Camel">
-<meta property="og:description" content="物理层0,1连接层Ethernet（以太网）WifiARP网络层ICMP（介于网络层和传输层）Internet Control Message Protocol
-
-回音(echo)ping 命令
-
-源头冷却(source quench)
-
-目的地无法到达(destination unreachable)
-
-超时(tiem exceeded)traceroute 用这种类型
-
-重新定向(redire">
-<meta property="og:updated_time" content="2017-03-07T09:58:53.000Z">
+<meta property="og:description" content="物理层物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。
+0,1针对特定的媒介，设备可以有相应的接口，用来接收物理信号。随后利用物理层的协议可以把物理信号转化为0/1序列。
+连接层在连接层中把0/1序列分成帧（frame）。帧是一段有序的0，1序列。连接层规定了帧的格式，确定特殊的0/1序列为帧的起始和结束，帧中还包含送信地址和收信地址，还有能够探测错误的校验序列，当然">
+<meta property="og:updated_time" content="2017-03-14T14:12:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络协议概览">
-<meta name="twitter:description" content="物理层0,1连接层Ethernet（以太网）WifiARP网络层ICMP（介于网络层和传输层）Internet Control Message Protocol
-
-回音(echo)ping 命令
-
-源头冷却(source quench)
-
-目的地无法到达(destination unreachable)
-
-超时(tiem exceeded)traceroute 用这种类型
-
-重新定向(redire">
+<meta name="twitter:description" content="物理层物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。
+0,1针对特定的媒介，设备可以有相应的接口，用来接收物理信号。随后利用物理层的协议可以把物理信号转化为0/1序列。
+连接层在连接层中把0/1序列分成帧（frame）。帧是一段有序的0，1序列。连接层规定了帧的格式，确定特殊的0/1序列为帧的起始和结束，帧中还包含送信地址和收信地址，还有能够探测错误的校验序列，当然">
 
 
 
@@ -372,7 +348,11 @@
       
 
       
-        <h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><h3 id="0-1"><a href="#0-1" class="headerlink" title="0,1"></a>0,1</h3><h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><h3 id="Ethernet（以太网）"><a href="#Ethernet（以太网）" class="headerlink" title="Ethernet（以太网）"></a>Ethernet（以太网）</h3><h3 id="Wifi"><a href="#Wifi" class="headerlink" title="Wifi"></a>Wifi</h3><h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h3 id="ICMP（介于网络层和传输层）"><a href="#ICMP（介于网络层和传输层）" class="headerlink" title="ICMP（介于网络层和传输层）"></a>ICMP（介于网络层和传输层）</h3><p>Internet Control Message Protocol</p>
+        <h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>物理层（physical layer）指光纤，电缆或者电磁波等真实存在的媒介。</p>
+<h3 id="0-1"><a href="#0-1" class="headerlink" title="0,1"></a>0,1</h3><p>针对特定的媒介，设备可以有相应的接口，用来接收物理信号。随后利用物理层的协议可以把物理信号转化为0/1序列。</p>
+<h2 id="连接层"><a href="#连接层" class="headerlink" title="连接层"></a>连接层</h2><p>在连接层中把0/1序列分成帧（frame）。帧是一段有序的0，1序列。连接层规定了帧的格式，确定特殊的0/1序列为帧的起始和结束，帧中还包含送信地址和收信地址，还有能够探测错误的校验序列，当然最重要的肯定是payload和相应的类型。连接层不关心传输的数据内容，只是像一个信封一样把数据包裹起来。帧的收信地址只能是局域网里地址，连接层更像是一个社区的邮差，更远的需要依赖高层的协议。</p>
+<h3 id="Ethernet（以太网）"><a href="#Ethernet（以太网）" class="headerlink" title="Ethernet（以太网）"></a>Ethernet（以太网）</h3><h3 id="Wifi"><a href="#Wifi" class="headerlink" title="Wifi"></a>Wifi</h3><h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>网络层的目的就是为了让不同的“社区”之间通信。比如我们希望WiFi局域网上的一台计算机和以太网上的一台计算通信，那么就需要有能从物理层上在两个网络之间发送和接收0/1序列，并能理解多种帧格式的“中间人”。路由器就是为了这个而产生的“中间设备”。</p>
+<h3 id="ICMP（介于网络层和传输层）"><a href="#ICMP（介于网络层和传输层）" class="headerlink" title="ICMP（介于网络层和传输层）"></a>ICMP（介于网络层和传输层）</h3><p>Internet Control Message Protocol</p>
 <ul>
 <li><p>回音(echo)<br>ping 命令</p>
 </li>
@@ -782,7 +762,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

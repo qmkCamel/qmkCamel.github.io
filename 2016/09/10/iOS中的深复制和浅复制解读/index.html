@@ -103,7 +103,7 @@
 深复制 : 直接拷贝整个对象内存到另一块内存中。简单来说就是内容拷贝。
 
 非集合对象12345678910- (void)nonCollectionObjectCopy &amp;#123;    NSString *string = @&quot;string&quot;;    NSMutableString *mutableString =">
-<meta property="og:updated_time" content="2017-03-14T07:20:42.000Z">
+<meta property="og:updated_time" content="2017-03-23T04:30:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS中的深复制和浅复制解读">
 <meta name="twitter:description" content="概念
@@ -379,6 +379,8 @@
 </ul>
 <h2 id="集合对象的完全深复制"><a href="#集合对象的完全深复制" class="headerlink" title="集合对象的完全深复制"></a>集合对象的完全深复制</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)collectionObjectCompletelyCopy &#123;</div><div class="line">    <span class="built_in">NSArray</span> *array = @[<span class="string">@"A"</span>,<span class="string">@"B"</span>];</div><div class="line">    <span class="built_in">NSMutableArray</span> *arrayCompletelyCopy = [[<span class="built_in">NSMutableArray</span> alloc] initWithArray:array copyItems:<span class="literal">YES</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSDictionary</span> *dic = @&#123;<span class="string">@"key"</span>:<span class="string">@"value"</span>&#125;;</div><div class="line">    <span class="built_in">NSMutableDictionary</span> *dicCompeletelyMutableCopy = [[<span class="built_in">NSMutableDictionary</span> alloc] initWithDictionary:dic copyItems:<span class="literal">YES</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这样的话，collection对象的内容也是深复制</p>
+<h2 id="如何实现使自定义的类支持拷贝"><a href="#如何实现使自定义的类支持拷贝" class="headerlink" title="如何实现使自定义的类支持拷贝"></a>如何实现使自定义的类支持拷贝</h2><p>声明该类遵从NSCopying(NSMutableCopying)协议，并实现其中的方法即可。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//以前开发程序的时候会把内存分为不同的“区”（zone）,对象会创建在某个区中。</span></div><div class="line"><span class="comment">//现在每个程序只有一个默认的区（default zone）。</span></div><div class="line">- (<span class="keyword">id</span>)copyWithZone:(<span class="keyword">nullable</span> <span class="built_in">NSZone</span> *)zone;</div><div class="line">- (<span class="keyword">id</span>)mutableCopyWithZone:(<span class="keyword">nullable</span> <span class="built_in">NSZone</span> *)zone;</div></pre></td></tr></table></figure>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
 <li><a href="https://github.com/ChenYilong/iOSInterviewQuestions/blob/master/01%E3%80%8A%E6%8B%9B%E8%81%98%E4%B8%80%E4%B8%AA%E9%9D%A0%E8%B0%B1%E7%9A%84iOS%E3%80%8B%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88/%E3%80%8A%E6%8B%9B%E8%81%98%E4%B8%80%E4%B8%AA%E9%9D%A0%E8%B0%B1%E7%9A%84iOS%E3%80%8B%E9%9D%A2%E8%AF%95%E9%A2%98%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88%EF%BC%88%E4%B8%8A%EF%BC%89.md#13-用property声明的nsstring或nsarraynsdictionary经常使用copy关键字为什么如果改用strong关键字可能造成什么问题" target="_blank" rel="external">招聘一个靠谱的iOS</a></li>
 <li><a href="https://www.zybuluo.com/MicroCai/note/50592" target="_blank" rel="external">iOS集合的深复制和浅复制</a></li>
@@ -562,7 +564,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非集合对象"><span class="nav-number">2.</span> <span class="nav-text">非集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象"><span class="nav-number">3.</span> <span class="nav-text">集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象的完全深复制"><span class="nav-number">4.</span> <span class="nav-text">集合对象的完全深复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非集合对象"><span class="nav-number">2.</span> <span class="nav-text">非集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象"><span class="nav-number">3.</span> <span class="nav-text">集合对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合对象的完全深复制"><span class="nav-number">4.</span> <span class="nav-text">集合对象的完全深复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何实现使自定义的类支持拷贝"><span class="nav-number">5.</span> <span class="nav-text">如何实现使自定义的类支持拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

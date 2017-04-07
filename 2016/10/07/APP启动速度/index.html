@@ -1,0 +1,778 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Camel" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="2016 WWDC session 406
+Ref
+main函数之前发生了什么
+这里说的启动速度是在main函数之前的启动速度，和didfinishLaunch这里面的启动时间不一样。
+
+
+Apple建议一个完整的App启动时间应该保证在400ms之内，若超过20s还没有完全启动，进程会被系统杀死。
+知识回顾动态链接库和静态链接库有什么区别动态库特点：
+
+共享：多个应用程序可以使用同一个动态库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APP启动速度">
+<meta property="og:url" content="https://qmkcamel.github.io/2016/10/07/APP启动速度/index.html">
+<meta property="og:site_name" content="Camel">
+<meta property="og:description" content="2016 WWDC session 406
+Ref
+main函数之前发生了什么
+这里说的启动速度是在main函数之前的启动速度，和didfinishLaunch这里面的启动时间不一样。
+
+
+Apple建议一个完整的App启动时间应该保证在400ms之内，若超过20s还没有完全启动，进程会被系统杀死。
+知识回顾动态链接库和静态链接库有什么区别动态库特点：
+
+共享：多个应用程序可以使用同一个动态库">
+<meta property="og:updated_time" content="2017-04-07T03:09:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="APP启动速度">
+<meta name="twitter:description" content="2016 WWDC session 406
+Ref
+main函数之前发生了什么
+这里说的启动速度是在main函数之前的启动速度，和didfinishLaunch这里面的启动时间不一样。
+
+
+Apple建议一个完整的App启动时间应该保证在400ms之内，若超过20s还没有完全启动，进程会被系统杀死。
+知识回顾动态链接库和静态链接库有什么区别动态库特点：
+
+共享：多个应用程序可以使用同一个动态库">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://qmkcamel.github.io/2016/10/07/APP启动速度/"/>
+
+
+
+
+
+  <title> APP启动速度 | Camel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=61096979";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Camel</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">qmk</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/10/07/APP启动速度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qmkCamel">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Camel">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                APP启动速度
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-07T00:00:00+08:00">
+                2016-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/10/07/APP启动速度/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/07/APP启动速度/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<ol>
+<li><a href="https://developer.apple.com/videos/play/wwdc2016/406/" target="_blank" rel="external">2016 WWDC session 406</a></li>
+<li><a href="https://gold.xitu.io/entry/57c3d611a633bd005d7b3b62" target="_blank" rel="external">Ref</a></li>
+<li><a href="http://blog.sunnyxx.com/2014/08/30/objc-pre-main/" target="_blank" rel="external">main函数之前发生了什么</a></li>
+<li>这里说的启动速度是在main函数之前的启动速度，和didfinishLaunch这里面的启动时间不一样。</li>
+</ol>
+</blockquote>
+<p>Apple建议一个完整的App启动时间应该保证在<strong>400ms</strong>之内，若超过<strong>20s</strong>还没有完全启动，进程会被系统杀死。</p>
+<h2 id="知识回顾"><a href="#知识回顾" class="headerlink" title="知识回顾"></a>知识回顾</h2><h3 id="动态链接库和静态链接库有什么区别"><a href="#动态链接库和静态链接库有什么区别" class="headerlink" title="动态链接库和静态链接库有什么区别"></a>动态链接库和静态链接库有什么区别</h3><p>动态库特点：</p>
+<ol>
+<li>共享：多个应用程序可以使用同一个动态库，启动多个应用程序的时候只需要把动态库加载内存中一份就可以</li>
+<li>开发模块好：要求开发者对功能划分比较好</li>
+<li>需要有一个链接的过程，每个程序只是有一个符号表，实际执行的函数没有直接打包进程序里面</li>
+</ol>
+<p>静态库的特点：</p>
+<ol>
+<li>代码装载速度快，执行快，需要打包进程序里，可能会比较大</li>
+<li>多个程序使用的话，会被装载多次，浪费内存</li>
+</ol>
+<blockquote>
+<ul>
+<li>代码共用：很多程序都动态链接了这些 lib，但它们在内存和磁盘中中只有一份</li>
+<li>易于维护：由于被依赖的 lib 是程序执行时才 link 的，所以这些 lib 很容易做更新，比如libSystem.dylib 是 libSystem.B.dylib 的替身，哪天想升级直接换成 libSystem.C.dylib 然后再替换替身就行了</li>
+<li>减少可执行文件体积：相比静态链接，动态链接在编译时不需要打进去，所以可执行文件的体积要小很多</li>
+</ul>
+</blockquote>
+<h2 id="mian函数之前都干了什么"><a href="#mian函数之前都干了什么" class="headerlink" title="mian函数之前都干了什么"></a>mian函数之前都干了什么</h2><ul>
+<li>link framework <ul>
+<li>CoreGrapics</li>
+<li>UIKit</li>
+<li>Foundation</li>
+<li>CoreFoundation</li>
+<li>libObjc (即objc和runtime)</li>
+<li>libSystem (列几个熟知的：libdispatch（GCD）, libsystem_c(c语言)，libsystem_blocks（block）, libcommonCrypto(加密))</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何获得应用的加载时间"><a href="#如何获得应用的加载时间" class="headerlink" title="如何获得应用的加载时间"></a>如何获得应用的加载时间</h2><p>在工程的scheme中添加环境变量<strong>DYLD_PRINT_STATISTICS</strong>，设置value为1。App启动的时候就会有日志输出。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Total pre-main <span class="selector-tag">time</span>:  <span class="number">74.37</span> milliseconds (<span class="number">100.0%</span>)</div><div class="line">       dylib loading <span class="selector-tag">time</span>:  <span class="number">41.05</span> milliseconds (<span class="number">55.2%</span>)</div><div class="line">      rebase/binding <span class="selector-tag">time</span>:   <span class="number">8.10</span> milliseconds (<span class="number">10.9%</span>)</div><div class="line">          ObjC setup <span class="selector-tag">time</span>:   <span class="number">9.87</span> milliseconds (<span class="number">13.2%</span>)</div><div class="line">         initializer <span class="selector-tag">time</span>:  <span class="number">15.23</span> milliseconds (<span class="number">20.4%</span>)</div><div class="line">         slowest intializers :</div><div class="line">           libSystem<span class="selector-class">.B</span><span class="selector-class">.dylib</span> :   <span class="number">6.58</span> milliseconds (<span class="number">8.8%</span>)</div><div class="line"> libBacktraceRecording<span class="selector-class">.dylib</span> :   <span class="number">6.27</span> milliseconds (<span class="number">8.4%</span>)</div></pre></td></tr></table></figure>
+<h2 id="启动优化"><a href="#启动优化" class="headerlink" title="启动优化"></a>启动优化</h2><h4 id="对动态库加载的时间优化"><a href="#对动态库加载的时间优化" class="headerlink" title="对动态库加载的时间优化"></a>对动态库加载的时间优化</h4><p>每个App都会进行动态库的加载，系统级别的占了大多数，针对系统界别的动态库是经过系统高度优化的。开发者需要关心自己集成到App中的动态库，这也是最消耗加载时间的地方。Apple建议减少在App里开发者的动态库的集成或者尽可能把多个动态库合并成一个来导入，保证在6个之内。</p>
+<h4 id="减少App的Objective-C分类，分类和唯一的Selector的个数"><a href="#减少App的Objective-C分类，分类和唯一的Selector的个数" class="headerlink" title="减少App的Objective-C分类，分类和唯一的Selector的个数"></a>减少App的Objective-C分类，分类和唯一的Selector的个数</h4><p>为了加快程序的整个动态链接, 在进行动态库的重定位和绑定(Rebase/binding)过程中减少指针修正的使用,加快程序机器码的生成.</p>
+<h4 id="减少Objc运行初始化的时间"><a href="#减少Objc运行初始化的时间" class="headerlink" title="减少Objc运行初始化的时间"></a>减少Objc运行初始化的时间</h4><p>主要是类的注册,分类的注册,唯一选择器的存在,以及涉及子父类内存布局的Non Fragile ivars偏移的更新,都会影响Objective-C运行时初始化的时间消耗.</p>
+<h4 id="使用initialize方法替换原先在-laod-方法中"><a href="#使用initialize方法替换原先在-laod-方法中" class="headerlink" title="使用initialize方法替换原先在 +laod 方法中"></a>使用initialize方法替换原先在 +laod 方法中</h4><p>用+initialize方法替换调用原先在OC的+load方法中执行初始代码工作,从而加快所有类文件的加载速度.</p>
+<h2 id="最后演讲者对加载启动优化的整体概括了Session所要传达的内容"><a href="#最后演讲者对加载启动优化的整体概括了Session所要传达的内容" class="headerlink" title="最后演讲者对加载启动优化的整体概括了Session所要传达的内容:"></a>最后演讲者对加载启动优化的整体概括了Session所要传达的内容:</h2><ul>
+<li>使用DYLD_PRINT_STATISTICS测试启动加载时间</li>
+<li>减少自定义的动态库集成</li>
+<li>精简原有的Objective-C类和代码</li>
+<li>移除静态的初始化操作</li>
+<li>使用更多的Swift代码</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/30/iOS 10 隐私政策/" rel="next" title="iOS 10 隐私政策">
+                <i class="fa fa-chevron-left"></i> iOS 10 隐私政策
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/07/Infer使用笔记/" rel="prev" title="Infer 使用笔记">
+                Infer 使用笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/07/APP启动速度/"
+           data-title="APP启动速度" data-url="https://qmkcamel.github.io/2016/10/07/APP启动速度/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="qmkCamel" />
+          <p class="site-author-name" itemprop="name">qmkCamel</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#知识回顾"><span class="nav-number">1.</span> <span class="nav-text">知识回顾</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态链接库和静态链接库有什么区别"><span class="nav-number">1.1.</span> <span class="nav-text">动态链接库和静态链接库有什么区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mian函数之前都干了什么"><span class="nav-number">2.</span> <span class="nav-text">mian函数之前都干了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何获得应用的加载时间"><span class="nav-number">3.</span> <span class="nav-text">如何获得应用的加载时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动优化"><span class="nav-number">4.</span> <span class="nav-text">启动优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对动态库加载的时间优化"><span class="nav-number">4.0.1.</span> <span class="nav-text">对动态库加载的时间优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减少App的Objective-C分类，分类和唯一的Selector的个数"><span class="nav-number">4.0.2.</span> <span class="nav-text">减少App的Objective-C分类，分类和唯一的Selector的个数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减少Objc运行初始化的时间"><span class="nav-number">4.0.3.</span> <span class="nav-text">减少Objc运行初始化的时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用initialize方法替换原先在-laod-方法中"><span class="nav-number">4.0.4.</span> <span class="nav-text">使用initialize方法替换原先在 +laod 方法中</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后演讲者对加载启动优化的整体概括了Session所要传达的内容"><span class="nav-number">5.</span> <span class="nav-text">最后演讲者对加载启动优化的整体概括了Session所要传达的内容:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qmkCamel</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"qmkcamel"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

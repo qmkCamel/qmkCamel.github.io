@@ -134,6 +134,99 @@
   </entry>
   
   <entry>
+    <title>APP启动速度</title>
+    <link href="https://qmkcamel.github.io/2016/10/07/APP%E5%90%AF%E5%8A%A8%E9%80%9F%E5%BA%A6/"/>
+    <id>https://qmkcamel.github.io/2016/10/07/APP启动速度/</id>
+    <published>2016-10-06T16:00:00.000Z</published>
+    <updated>2017-04-07T03:09:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<ol>
+<li><a href="https://developer.apple.com/videos/play/wwdc2016/406/" target="_blank" rel="external">2016 WWDC session 406</a></li>
+<li><a href="https://gold.xitu.io/entry/57c3d611a633bd005d7b3b62" target="_blank" rel="external">Ref</a></li>
+<li><a href="http://blog.sunnyxx.com/2014/08/30/objc-pre-main/" target="_blank" rel="external">main函数之前发生了什么</a></li>
+<li>这里说的启动速度是在main函数之前的启动速度，和didfinishLaunch这里面的启动时间不一样。</li>
+</ol>
+</blockquote>
+<p>Apple建议一个完整的App启动时间应该保证在<strong>400ms</strong>之内，若超过<strong>20s</strong>还没有完全启动，进程会被系统杀死。</p>
+<h2 id="知识回顾"><a href="#知识回顾" class="headerlink" title="知识回顾"></a>知识回顾</h2><h3 id="动态链接库和静态链接库有什么区别"><a href="#动态链接库和静态链接库有什么区别" class="headerlink" title="动态链接库和静态链接库有什么区别"></a>动态链接库和静态链接库有什么区别</h3><p>动态库特点：</p>
+<ol>
+<li>共享：多个应用程序可以使用同一个动态库，启动多个应用程序的时候只需要把动态库加载内存中一份就可以</li>
+<li>开发模块好：要求开发者对功能划分比较好</li>
+<li>需要有一个链接的过程，每个程序只是有一个符号表，实际执行的函数没有直接打包进程序里面</li>
+</ol>
+<p>静态库的特点：</p>
+<ol>
+<li>代码装载速度快，执行快，需要打包进程序里，可能会比较大</li>
+<li>多个程序使用的话，会被装载多次，浪费内存</li>
+</ol>
+<blockquote>
+<ul>
+<li>代码共用：很多程序都动态链接了这些 lib，但它们在内存和磁盘中中只有一份</li>
+<li>易于维护：由于被依赖的 lib 是程序执行时才 link 的，所以这些 lib 很容易做更新，比如libSystem.dylib 是 libSystem.B.dylib 的替身，哪天想升级直接换成 libSystem.C.dylib 然后再替换替身就行了</li>
+<li>减少可执行文件体积：相比静态链接，动态链接在编译时不需要打进去，所以可执行文件的体积要小很多</li>
+</ul>
+</blockquote>
+<h2 id="mian函数之前都干了什么"><a href="#mian函数之前都干了什么" class="headerlink" title="mian函数之前都干了什么"></a>mian函数之前都干了什么</h2><ul>
+<li>link framework <ul>
+<li>CoreGrapics</li>
+<li>UIKit</li>
+<li>Foundation</li>
+<li>CoreFoundation</li>
+<li>libObjc (即objc和runtime)</li>
+<li>libSystem (列几个熟知的：libdispatch（GCD）, libsystem_c(c语言)，libsystem_blocks（block）, libcommonCrypto(加密))</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何获得应用的加载时间"><a href="#如何获得应用的加载时间" class="headerlink" title="如何获得应用的加载时间"></a>如何获得应用的加载时间</h2><p>在工程的scheme中添加环境变量<strong>DYLD_PRINT_STATISTICS</strong>，设置value为1。App启动的时候就会有日志输出。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Total pre-main <span class="selector-tag">time</span>:  <span class="number">74.37</span> milliseconds (<span class="number">100.0%</span>)</div><div class="line">       dylib loading <span class="selector-tag">time</span>:  <span class="number">41.05</span> milliseconds (<span class="number">55.2%</span>)</div><div class="line">      rebase/binding <span class="selector-tag">time</span>:   <span class="number">8.10</span> milliseconds (<span class="number">10.9%</span>)</div><div class="line">          ObjC setup <span class="selector-tag">time</span>:   <span class="number">9.87</span> milliseconds (<span class="number">13.2%</span>)</div><div class="line">         initializer <span class="selector-tag">time</span>:  <span class="number">15.23</span> milliseconds (<span class="number">20.4%</span>)</div><div class="line">         slowest intializers :</div><div class="line">           libSystem<span class="selector-class">.B</span><span class="selector-class">.dylib</span> :   <span class="number">6.58</span> milliseconds (<span class="number">8.8%</span>)</div><div class="line"> libBacktraceRecording<span class="selector-class">.dylib</span> :   <span class="number">6.27</span> milliseconds (<span class="number">8.4%</span>)</div></pre></td></tr></table></figure>
+<h2 id="启动优化"><a href="#启动优化" class="headerlink" title="启动优化"></a>启动优化</h2><h4 id="对动态库加载的时间优化"><a href="#对动态库加载的时间优化" class="headerlink" title="对动态库加载的时间优化"></a>对动态库加载的时间优化</h4><p>每个App都会进行动态库的加载，系统级别的占了大多数，针对系统界别的动态库是经过系统高度优化的。开发者需要关心自己集成到App中的动态库，这也是最消耗加载时间的地方。Apple建议减少在App里开发者的动态库的集成或者尽可能把多个动态库合并成一个来导入，保证在6个之内。</p>
+<h4 id="减少App的Objective-C分类，分类和唯一的Selector的个数"><a href="#减少App的Objective-C分类，分类和唯一的Selector的个数" class="headerlink" title="减少App的Objective-C分类，分类和唯一的Selector的个数"></a>减少App的Objective-C分类，分类和唯一的Selector的个数</h4><p>为了加快程序的整个动态链接, 在进行动态库的重定位和绑定(Rebase/binding)过程中减少指针修正的使用,加快程序机器码的生成.</p>
+<h4 id="减少Objc运行初始化的时间"><a href="#减少Objc运行初始化的时间" class="headerlink" title="减少Objc运行初始化的时间"></a>减少Objc运行初始化的时间</h4><p>主要是类的注册,分类的注册,唯一选择器的存在,以及涉及子父类内存布局的Non Fragile ivars偏移的更新,都会影响Objective-C运行时初始化的时间消耗.</p>
+<h4 id="使用initialize方法替换原先在-laod-方法中"><a href="#使用initialize方法替换原先在-laod-方法中" class="headerlink" title="使用initialize方法替换原先在 +laod 方法中"></a>使用initialize方法替换原先在 +laod 方法中</h4><p>用+initialize方法替换调用原先在OC的+load方法中执行初始代码工作,从而加快所有类文件的加载速度.</p>
+<h2 id="最后演讲者对加载启动优化的整体概括了Session所要传达的内容"><a href="#最后演讲者对加载启动优化的整体概括了Session所要传达的内容" class="headerlink" title="最后演讲者对加载启动优化的整体概括了Session所要传达的内容:"></a>最后演讲者对加载启动优化的整体概括了Session所要传达的内容:</h2><ul>
+<li>使用DYLD_PRINT_STATISTICS测试启动加载时间</li>
+<li>减少自定义的动态库集成</li>
+<li>精简原有的Objective-C类和代码</li>
+<li>移除静态的初始化操作</li>
+<li>使用更多的Swift代码</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.apple.com/videos/play/wwdc2016/406/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;2016 WWDC session 406&lt;/
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS 10 隐私政策</title>
+    <link href="https://qmkcamel.github.io/2016/09/30/iOS%2010%20%E9%9A%90%E7%A7%81%E6%94%BF%E7%AD%96/"/>
+    <id>https://qmkcamel.github.io/2016/09/30/iOS 10 隐私政策/</id>
+    <published>2016-09-29T16:00:00.000Z</published>
+    <updated>2017-04-07T03:15:32.000Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 相册 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSPhotoLibraryUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问相册<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 相机 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSCameraUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问相机<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 麦克风 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSMicrophoneUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问麦克风<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 位置 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSLocationUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问位置<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 在使用期间访问位置 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSLocationWhenInUseUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能在使用期间访问位置<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 始终访问位置 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSLocationAlwaysUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能始终访问位置<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 日历 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSCalendarsUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问日历<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 提醒事项 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSRemindersUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问提醒事项<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 运动与健身 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSMotionUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问运动与健身<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 健康更新 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSHealthUpdateUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问健康更新 <span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 健康分享 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSHealthShareUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问健康分享<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 蓝牙 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSBluetoothPeripheralUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问蓝牙<span class="tag">&lt;/<span class="name">string</span>&gt;</span> </div><div class="line"><span class="comment">&lt;!-- 媒体资料库 --&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAppleMusicUsageDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span> </div><div class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>App需要您的同意,才能访问媒体资料库<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>+load 和 +initialize 的区别是什么？</title>
     <link href="https://qmkcamel.github.io/2016/09/26/load%E5%92%8Cinitialize%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88/"/>
     <id>https://qmkcamel.github.io/2016/09/26/load和initialize的区别是什么/</id>
@@ -189,11 +282,97 @@
   </entry>
   
   <entry>
+    <title>MQTT入门第一篇</title>
+    <link href="https://qmkcamel.github.io/2016/09/19/MQTT%E5%85%A5%E9%97%A8%E7%AC%AC%E4%B8%80%E7%AF%87/"/>
+    <id>https://qmkcamel.github.io/2016/09/19/MQTT入门第一篇/</id>
+    <published>2016-09-18T16:00:00.000Z</published>
+    <updated>2017-04-07T03:03:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Message-Queuing-Telemetry-Transport"><a href="#Message-Queuing-Telemetry-Transport" class="headerlink" title="Message Queuing Telemetry Transport"></a>Message Queuing Telemetry Transport</h2><p>MQTT是基于二进制消息的发布/订阅编程模式的消息协议，主要解决的是机器与机器之间数据通信，物联网通信协议。之前web的request/response模式不再合适。</p>
+<p>具有如下特点：</p>
+<ul>
+<li>即时传输的轻量级协议</li>
+<li>专门设计用于低带宽或者高昂的网络费用</li>
+<li>具备三种服务品质层级</li>
+</ul>
+<h2 id="由于规范简单，非常适用于低功耗和网络带宽有限的场景，如："><a href="#由于规范简单，非常适用于低功耗和网络带宽有限的场景，如：" class="headerlink" title="由于规范简单，非常适用于低功耗和网络带宽有限的场景，如："></a>由于规范简单，非常适用于低功耗和网络带宽有限的场景，如：</h2><ul>
+<li>遥感数据</li>
+<li>汽车</li>
+<li>智能家居</li>
+<li>智慧城市</li>
+<li>医疗医护</li>
+</ul>
+<h2 id="由于物联网的环境是很特别的，所以遵循如下设计规则："><a href="#由于物联网的环境是很特别的，所以遵循如下设计规则：" class="headerlink" title="由于物联网的环境是很特别的，所以遵循如下设计规则："></a>由于物联网的环境是很特别的，所以遵循如下设计规则：</h2><ul>
+<li>精简，不添加可有可无的功能</li>
+<li>发布/订阅（Pub/Sub）模式，方便消息在传感器之间传递</li>
+<li>允许用户动态创建主题，零成本运维</li>
+<li>传输量降到最低以提高传输效率</li>
+<li>把低带宽，高延迟，不稳定的网络因素考虑在内</li>
+<li>支持连续的会话控制</li>
+<li>理解客户端计算能力可能很低</li>
+<li>提供服务质量管理</li>
+<li>假设数据不可知，不强求数据的类型和格式，保持灵活性</li>
+</ul>
+<h2 id="发布-订阅模式"><a href="#发布-订阅模式" class="headerlink" title="发布/订阅模式"></a>发布/订阅模式</h2><ul>
+<li>发布者和订阅者不需要了解彼此，只需要一个消息代理就好</li>
+<li>发布者和订阅者不需要交互，发布者不会因为等订阅者确认而导致锁定</li>
+<li>发布者和订阅者不需要同时在线，可以自由选择时间来消费消息</li>
+</ul>
+<h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><ul>
+<li>MQTT通过主题对消息进行分类，本质上是UTF-8的字符串</li>
+<li>不需要创建，直接使用，有一定的规则</li>
+<li>可以用通配符订阅主题，但是不允许通配符广播</li>
+</ul>
+<h2 id="服务质量"><a href="#服务质量" class="headerlink" title="服务质量"></a>服务质量</h2><ol>
+<li>尽力而为。消息发送者会想办法发消息，但出现以外不会重试</li>
+<li>至少一次。消息接收着没有反馈收到，后者反馈丢失，消息发送者会再次发送消息，一定程度上会造成消息重复。</li>
+<li><p>恰好一次。保证这种语义肯定会减少并发或者增加延时。丢失消息或者重复消息不可接受时才是最合适的。</p>
+<blockquote>
+<p>2是最理想的，但是肯定会对并发和延迟带来影响。1在处理日志的情况下完全可以。0是鸡肋，和UDP有点像。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="消息类型"><a href="#消息类型" class="headerlink" title="消息类型"></a>消息类型</h2><p>MQTT拥有14种不同的消息类型：</p>
+<ul>
+<li>CONNECT：客户端连接到MQTT代理</li>
+<li>CONNACK：连接确认</li>
+<li>PUBLISH：新发布消息</li>
+<li>PUBACK：新发布消息确认，是QoS 1给PUBLISH消息的回复</li>
+<li>PUBREC：QoS 2消息流的第一部分，表示消息发布已记录</li>
+<li>PUBREL：QoS 2消息流的第二部分，表示消息发布已释放</li>
+<li>PUBCOMP：QoS 2消息流的第三部分，表示消息发布完成</li>
+<li>SUBSCRIBE：客户端订阅某个主题</li>
+<li>SUBACK：对于SUBSCRIBE消息的确认</li>
+<li>UNSUBSCRIBE：客户端终止订阅的消息</li>
+<li>UNSUBACK：对于UNSUBSCRIBE消息的确认</li>
+<li>PINGREQ：心跳</li>
+<li>PINGRESP：确认心跳</li>
+<li>DISCONNECT：客户端终止连接前优雅地通知MQTT代理</li>
+</ul>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><ol>
+<li><a href="http://www.infoq.com/cn/news/2014/12/mqtt-ibm-iot" target="_blank" rel="external">物联网传输协议MQTT</a></li>
+<li><a href="https://github.com/mcxiaoke/mqtt" target="_blank" rel="external">MQTT协议中文版</a></li>
+<li><a href="http://dataguild.org/?p=6817" target="_blank" rel="external">MQTT入门篇</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Message-Queuing-Telemetry-Transport&quot;&gt;&lt;a href=&quot;#Message-Queuing-Telemetry-Transport&quot; class=&quot;headerlink&quot; title=&quot;Message Queuing Teleme
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS中的深复制和浅复制解读</title>
     <link href="https://qmkcamel.github.io/2016/09/10/iOS%E4%B8%AD%E7%9A%84%E6%B7%B1%E5%A4%8D%E5%88%B6%E5%92%8C%E6%B5%85%E5%A4%8D%E5%88%B6%E8%A7%A3%E8%AF%BB/"/>
     <id>https://qmkcamel.github.io/2016/09/10/iOS中的深复制和浅复制解读/</id>
     <published>2016-09-09T16:00:00.000Z</published>
-    <updated>2017-03-23T04:30:07.000Z</updated>
+    <updated>2017-03-23T06:01:58.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
 <li><strong>浅复制</strong> : 并不拷贝对象，只是拷贝指向对象的指针。简单来说就是<code>指针拷贝</code>。</li>

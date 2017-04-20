@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="软件工程,瞎扯," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -89,40 +89,31 @@
 
 
 
-<meta name="description" content="软件的目的是帮助别人。
-相比降低开发成本，更重要的是降低维护的成本。
-变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。
-缺陷定律：程序出现缺陷的可能性，正比于你对他所做修改的程度。
-简洁定律：软件任何一部分的维护难度，正比于该部分的简洁程度。
-测试定律：你对软件行为的了解程度，等与你真正测试他的程度。from 简约之美
+<meta name="description" content="UIView继承自UIResponder，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对CALayer的一个封装。
+CALayer继承自NSObject，属于QuarzCore框架，不能响应事件，主要是处理内容的绘制和动画
+这样设计可能的原因有如下：
 
-
-在发开经过一段时间之后，随着维护成本的不断提高，越来越">
+和用户的一些触摸事件是可以放到比较高的抽象层来处理的
+UIView 和 NSView 的实现是不一样的，但">
 <meta property="og:type" content="article">
-<meta property="og:title" content="软件设计的规则">
-<meta property="og:url" content="https://qmkcamel.github.io/2016/08/01/软件设计的原则/index.html">
+<meta property="og:title" content="UIView 和 CALayer">
+<meta property="og:url" content="https://qmkcamel.github.io/2016/11/15/UIView和CALayer/index.html">
 <meta property="og:site_name" content="Camel">
-<meta property="og:description" content="软件的目的是帮助别人。
-相比降低开发成本，更重要的是降低维护的成本。
-变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。
-缺陷定律：程序出现缺陷的可能性，正比于你对他所做修改的程度。
-简洁定律：软件任何一部分的维护难度，正比于该部分的简洁程度。
-测试定律：你对软件行为的了解程度，等与你真正测试他的程度。from 简约之美
+<meta property="og:description" content="UIView继承自UIResponder，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对CALayer的一个封装。
+CALayer继承自NSObject，属于QuarzCore框架，不能响应事件，主要是处理内容的绘制和动画
+这样设计可能的原因有如下：
 
-
-在发开经过一段时间之后，随着维护成本的不断提高，越来越">
-<meta property="og:updated_time" content="2017-03-10T16:12:22.000Z">
+和用户的一些触摸事件是可以放到比较高的抽象层来处理的
+UIView 和 NSView 的实现是不一样的，但">
+<meta property="og:updated_time" content="2017-04-20T08:28:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="软件设计的规则">
-<meta name="twitter:description" content="软件的目的是帮助别人。
-相比降低开发成本，更重要的是降低维护的成本。
-变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。
-缺陷定律：程序出现缺陷的可能性，正比于你对他所做修改的程度。
-简洁定律：软件任何一部分的维护难度，正比于该部分的简洁程度。
-测试定律：你对软件行为的了解程度，等与你真正测试他的程度。from 简约之美
+<meta name="twitter:title" content="UIView 和 CALayer">
+<meta name="twitter:description" content="UIView继承自UIResponder，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对CALayer的一个封装。
+CALayer继承自NSObject，属于QuarzCore框架，不能响应事件，主要是处理内容的绘制和动画
+这样设计可能的原因有如下：
 
-
-在发开经过一段时间之后，随着维护成本的不断提高，越来越">
+和用户的一些触摸事件是可以放到比较高的抽象层来处理的
+UIView 和 NSView 的实现是不一样的，但">
 
 
 
@@ -150,13 +141,13 @@
 
 
 
-  <link rel="canonical" href="https://qmkcamel.github.io/2016/08/01/软件设计的原则/"/>
+  <link rel="canonical" href="https://qmkcamel.github.io/2016/11/15/UIView和CALayer/"/>
 
 
 
 
 
-  <title> 软件设计的规则 | Camel </title>
+  <title> UIView 和 CALayer | Camel </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -284,7 +275,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/08/01/软件设计的原则/">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/11/15/UIView和CALayer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qmkCamel">
@@ -305,7 +296,7 @@
             
             
               
-                软件设计的规则
+                UIView 和 CALayer
               
             
           </h1>
@@ -320,8 +311,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-01T00:00:00+08:00">
-                2016-08-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-15T00:00:00+08:00">
+                2016-11-15
               </time>
             
 
@@ -339,8 +330,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/01/软件设计的原则/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/01/软件设计的原则/" itemprop="commentCount"></span>
+                <a href="/2016/11/15/UIView和CALayer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/15/UIView和CALayer/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -366,20 +357,32 @@
       
 
       
-        <blockquote>
-<ol>
-<li>软件的目的是帮助别人。</li>
-<li>相比降低开发成本，更重要的是降低维护的成本。</li>
-<li>变化定律：程序存在的时间越长，他的某个部分需要变化的可能性越大。</li>
-<li>缺陷定律：程序出现缺陷的可能性，正比于你对他所做修改的程度。</li>
-<li>简洁定律：软件任何一部分的维护难度，正比于该部分的简洁程度。</li>
-<li>测试定律：你对软件行为的了解程度，等与你真正测试他的程度。<br>from <a href="https://book.douban.com/subject/20445258/" target="_blank" rel="external">简约之美</a></li>
-</ol>
-</blockquote>
-<p>在发开经过一段时间之后，随着维护成本的不断提高，越来越感到下面两点的重要性。</p>
+        <p><code>UIView</code>继承自<code>UIResponder</code>，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对<code>CALayer</code>的一个封装。</p>
+<p><code>CALayer</code>继承自<code>NSObject</code>，属于QuarzCore框架，不能响应事件，主要是处理内容的绘制和动画</p>
+<p>这样设计可能的原因有如下：</p>
 <ul>
-<li>相比降低开发成本，降低维护成本更加重要。</li>
-<li>维护成本正比于系统的复杂程度。</li>
+<li>和用户的一些触摸事件是可以放到比较高的抽象层来处理的</li>
+<li>UIView 和 NSView 的实现是不一样的，但是 Core Animation 是基本上可以重用的，可以重用 Core Animation 部分。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li>view is the layer’s delegate  </li>
+<li><p>当一个view第一次出现或者它的一部分需要重绘的时候，会调用view的drawRect方法。有四种方式会引起view的update </p>
+<ul>
+<li>移动或者移除部分遮挡你view的view</li>
+<li>把一个hidden的view设置为hidden = NO</li>
+<li>把一个view滑出屏幕之外，然后再滑进来</li>
+<li>在你的view上显示的调用 setNeedsDisplay 或者 setNeedsDisplayInRect</li>
+</ul>
+</li>
+<li><p>UIKit 和 CoreAnimation 使用左上角做原点，CoreGrapics使用左下角做原点（Core Graphics源于Mac OS X系统，在Mac OS X中，坐标原点在左下方并且正y坐标是朝上的，而在iOS中，原点坐标是在左上方并且正y坐标是朝下的。在大多数情况下，这不会出现任何问题，因为图形上下文的坐标系统是会自动调节补偿的。但是创建和绘制一个CGImage对象时就会暴露出倒置问题。）</p>
+</li>
+<li><p>每一个view背后都有一个layer，对view的修改实质上是对layer的修改</p>
+</li>
+<li>CALayer 的同一个属性值，会分别保存在模型层 modelLayer ，和展现层 presentationLayer 中。当我们修改属性值时，是修改的模型层的数值，动画时系统根据模型层的变化，生成的过渡值，是保存在展现层中的。（layer还有一个渲染层，做动画的时候一般不会care他）</li>
+</ul>
+<h2 id="显式动画和隐式动画"><a href="#显式动画和隐式动画" class="headerlink" title="显式动画和隐式动画"></a>显式动画和隐式动画</h2><ul>
+<li>显式的执行一个动画</li>
+<li>系统添加上的动画。当我们改变 CALayer 的一个可动画的属性值时，就会触发系统的隐式动画。</li>
 </ul>
 
       
@@ -404,9 +407,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/软件工程/" rel="tag"># 软件工程</a>
-          
-            <a href="/tags/瞎扯/" rel="tag"># 瞎扯</a>
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
           
         </div>
       
@@ -419,8 +420,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/28/Joel Test/" rel="next" title="Joel Test">
-                <i class="fa fa-chevron-left"></i> Joel Test
+              <a href="/2016/10/07/APP启动速度/" rel="next" title="APP启动速度">
+                <i class="fa fa-chevron-left"></i> APP启动速度
               </a>
             
           </div>
@@ -429,8 +430,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/08/22/iOS中属性的解读/" rel="prev" title="iOS中属性的解读">
-                iOS中属性的解读 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/07/Infer使用笔记/" rel="prev" title="Infer 使用笔记">
+                Infer 使用笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -457,8 +458,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/01/软件设计的原则/"
-           data-title="软件设计的规则" data-url="https://qmkcamel.github.io/2016/08/01/软件设计的原则/">
+      <div class="ds-thread" data-thread-key="2016/11/15/UIView和CALayer/"
+           data-title="UIView 和 CALayer" data-url="https://qmkcamel.github.io/2016/11/15/UIView和CALayer/">
       </div>
     
   </div>
@@ -482,8 +483,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -543,6 +553,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">1.</span> <span class="nav-text">Tips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显式动画和隐式动画"><span class="nav-number">2.</span> <span class="nav-text">显式动画和隐式动画</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

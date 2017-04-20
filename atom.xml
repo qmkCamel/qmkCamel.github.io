@@ -134,6 +134,54 @@
   </entry>
   
   <entry>
+    <title>UIView 和 CALayer</title>
+    <link href="https://qmkcamel.github.io/2016/11/15/UIView%E5%92%8CCALayer/"/>
+    <id>https://qmkcamel.github.io/2016/11/15/UIView和CALayer/</id>
+    <published>2016-11-14T16:00:00.000Z</published>
+    <updated>2017-04-20T08:28:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><code>UIView</code>继承自<code>UIResponder</code>，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对<code>CALayer</code>的一个封装。</p>
+<p><code>CALayer</code>继承自<code>NSObject</code>，属于QuarzCore框架，不能响应事件，主要是处理内容的绘制和动画</p>
+<p>这样设计可能的原因有如下：</p>
+<ul>
+<li>和用户的一些触摸事件是可以放到比较高的抽象层来处理的</li>
+<li>UIView 和 NSView 的实现是不一样的，但是 Core Animation 是基本上可以重用的，可以重用 Core Animation 部分。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li>view is the layer’s delegate  </li>
+<li><p>当一个view第一次出现或者它的一部分需要重绘的时候，会调用view的drawRect方法。有四种方式会引起view的update </p>
+<ul>
+<li>移动或者移除部分遮挡你view的view</li>
+<li>把一个hidden的view设置为hidden = NO</li>
+<li>把一个view滑出屏幕之外，然后再滑进来</li>
+<li>在你的view上显示的调用 setNeedsDisplay 或者 setNeedsDisplayInRect</li>
+</ul>
+</li>
+<li><p>UIKit 和 CoreAnimation 使用左上角做原点，CoreGrapics使用左下角做原点（Core Graphics源于Mac OS X系统，在Mac OS X中，坐标原点在左下方并且正y坐标是朝上的，而在iOS中，原点坐标是在左上方并且正y坐标是朝下的。在大多数情况下，这不会出现任何问题，因为图形上下文的坐标系统是会自动调节补偿的。但是创建和绘制一个CGImage对象时就会暴露出倒置问题。）</p>
+</li>
+<li><p>每一个view背后都有一个layer，对view的修改实质上是对layer的修改</p>
+</li>
+<li>CALayer 的同一个属性值，会分别保存在模型层 modelLayer ，和展现层 presentationLayer 中。当我们修改属性值时，是修改的模型层的数值，动画时系统根据模型层的变化，生成的过渡值，是保存在展现层中的。（layer还有一个渲染层，做动画的时候一般不会care他）</li>
+</ul>
+<h2 id="显式动画和隐式动画"><a href="#显式动画和隐式动画" class="headerlink" title="显式动画和隐式动画"></a>显式动画和隐式动画</h2><ul>
+<li>显式的执行一个动画</li>
+<li>系统添加上的动画。当我们改变 CALayer 的一个可动画的属性值时，就会触发系统的隐式动画。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;UIView&lt;/code&gt;继承自&lt;code&gt;UIResponder&lt;/code&gt;，可以响应事件，属于UIKit框架，属于比较高层次的抽象，主要是对显示的内容的管理，是对&lt;code&gt;CALayer&lt;/code&gt;的一个封装。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;CALayer
+    
+    </summary>
+    
+    
+      <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>APP启动速度</title>
     <link href="https://qmkcamel.github.io/2016/10/07/APP%E5%90%AF%E5%8A%A8%E9%80%9F%E5%BA%A6/"/>
     <id>https://qmkcamel.github.io/2016/10/07/APP启动速度/</id>
@@ -582,9 +630,9 @@
     </summary>
     
     
-      <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
-    
       <category term="iOS" scheme="https://qmkcamel.github.io/tags/iOS/"/>
+    
+      <category term="App" scheme="https://qmkcamel.github.io/tags/App/"/>
     
   </entry>
   

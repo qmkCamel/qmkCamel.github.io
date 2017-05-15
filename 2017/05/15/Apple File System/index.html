@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,App," />
+  <meta name="keywords" content="File System," />
 
 
 
@@ -89,34 +89,24 @@
 
 
 
-<meta name="description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
-
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
+<meta name="description" content="在升级了10.3之后，你会发现存储空间貌似多了起来。其实这些都是APFS的功劳。
+下面我们来简单聊聊APFS带来了哪些改变。SSD相对于机械硬盘来说，没有磁头这个概念，能及时访问到硬盘内的任何一处，不需要担心磁盘碎片带来的性能下降。
+文件克隆（Clone）,复制不再占用空间在APFS中，复制只会创造一个新的标记，并不会真的完整复制。如果需要修改其中一个文件，APFS会保留相同的部分，只存储变化的部">
 <meta property="og:type" content="article">
-<meta property="og:title" content="App执行状态">
-<meta property="og:url" content="https://qmkcamel.github.io/2016/07/15/App执行状态/index.html">
+<meta property="og:title" content="Apple File System">
+<meta property="og:url" content="https://qmkcamel.github.io/2017/05/15/Apple File System/index.html">
 <meta property="og:site_name" content="Camel">
-<meta property="og:description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
-
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
-<meta property="og:updated_time" content="2017-03-07T09:58:52.000Z">
+<meta property="og:description" content="在升级了10.3之后，你会发现存储空间貌似多了起来。其实这些都是APFS的功劳。
+下面我们来简单聊聊APFS带来了哪些改变。SSD相对于机械硬盘来说，没有磁头这个概念，能及时访问到硬盘内的任何一处，不需要担心磁盘碎片带来的性能下降。
+文件克隆（Clone）,复制不再占用空间在APFS中，复制只会创造一个新的标记，并不会真的完整复制。如果需要修改其中一个文件，APFS会保留相同的部分，只存储变化的部">
+<meta property="og:image" content="http://ohujsjvgi.bkt.clouddn.com/14948327817341.jpg">
+<meta property="og:updated_time" content="2017-05-15T07:51:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="App执行状态">
-<meta name="twitter:description" content="iOS执行状态
-Not running
-The app has not been launched or was running but was terminated by the system.
-
-
-Inactive
-The app is running in the foreground but is currently not receiving events. (It may be exe">
+<meta name="twitter:title" content="Apple File System">
+<meta name="twitter:description" content="在升级了10.3之后，你会发现存储空间貌似多了起来。其实这些都是APFS的功劳。
+下面我们来简单聊聊APFS带来了哪些改变。SSD相对于机械硬盘来说，没有磁头这个概念，能及时访问到硬盘内的任何一处，不需要担心磁盘碎片带来的性能下降。
+文件克隆（Clone）,复制不再占用空间在APFS中，复制只会创造一个新的标记，并不会真的完整复制。如果需要修改其中一个文件，APFS会保留相同的部分，只存储变化的部">
+<meta name="twitter:image" content="http://ohujsjvgi.bkt.clouddn.com/14948327817341.jpg">
 
 
 
@@ -144,13 +134,13 @@ The app is running in the foreground but is currently not receiving events. (It 
 
 
 
-  <link rel="canonical" href="https://qmkcamel.github.io/2016/07/15/App执行状态/"/>
+  <link rel="canonical" href="https://qmkcamel.github.io/2017/05/15/Apple File System/"/>
 
 
 
 
 
-  <title> App执行状态 | Camel </title>
+  <title> Apple File System | Camel </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -278,7 +268,7 @@ The app is running in the foreground but is currently not receiving events. (It 
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2016/07/15/App执行状态/">
+    <link itemprop="mainEntityOfPage" href="https://qmkcamel.github.io/2017/05/15/Apple File System/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qmkCamel">
@@ -299,7 +289,7 @@ The app is running in the foreground but is currently not receiving events. (It 
             
             
               
-                App执行状态
+                Apple File System
               
             
           </h1>
@@ -314,8 +304,8 @@ The app is running in the foreground but is currently not receiving events. (It 
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-15T00:00:00+08:00">
-                2016-07-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T00:00:00+08:00">
+                2017-05-15
               </time>
             
 
@@ -350,28 +340,22 @@ The app is running in the foreground but is currently not receiving events. (It 
       
 
       
-        <h2 id="iOS执行状态"><a href="#iOS执行状态" class="headerlink" title="iOS执行状态"></a>iOS执行状态</h2><ul>
-<li>Not running<ul>
-<li>The app has not been launched or was running but was terminated by the system.</li>
+        <p>在升级了10.3之后，你会发现存储空间貌似多了起来。其实这些都是APFS的功劳。</p>
+<h2 id="下面我们来简单聊聊APFS带来了哪些改变。"><a href="#下面我们来简单聊聊APFS带来了哪些改变。" class="headerlink" title="下面我们来简单聊聊APFS带来了哪些改变。"></a>下面我们来简单聊聊APFS带来了哪些改变。</h2><p>SSD相对于机械硬盘来说，没有磁头这个概念，能及时访问到硬盘内的任何一处，不需要担心<code>磁盘碎片</code>带来的性能下降。</p>
+<h4 id="文件克隆（Clone）-复制不再占用空间"><a href="#文件克隆（Clone）-复制不再占用空间" class="headerlink" title="文件克隆（Clone）,复制不再占用空间"></a>文件克隆（Clone）,复制不再占用空间</h4><p>在APFS中，复制只会创造一个新的标记，并不会真的完整复制。如果需要修改其中一个文件，APFS会保留相同的部分，只存储变化的部分。文件在存储的时候，系统会将修改部分和未被修改的部分拼接在一起，形成新的文件。<br>在iOS中，由于沙盒机制的影响，在A应用的文件如果需要被B应用调用的话，需要在复制一遍，这一问题在APFS中被解决。</p>
+<h4 id="磁盘快照（Snapshot）"><a href="#磁盘快照（Snapshot）" class="headerlink" title="磁盘快照（Snapshot）"></a>磁盘快照（Snapshot）</h4><p>快照是基于增量的，只有文件发生变化的那一部分会占用更多的空间。</p>
+<h4 id="空间共享（Space-Sharing）"><a href="#空间共享（Space-Sharing）" class="headerlink" title="空间共享（Space Sharing）"></a>空间共享（Space Sharing）</h4><p>将传统的分区虚拟为 Container,只要几个容器在一个APFS磁盘下，可以自由变大和缩小。<br><img src="http://ohujsjvgi.bkt.clouddn.com/14948327817341.jpg" alt=""></p>
+<h4 id="提升了服务质量（I-O-QoS）"><a href="#提升了服务质量（I-O-QoS）" class="headerlink" title="提升了服务质量（I/O QoS）"></a>提升了服务质量（I/O QoS）</h4><p>提供了 Extensible Block Allocator等技术。对数据的不同访问划分到不同的优先级中，优先处理用户感知明显的操作。</p>
+<h4 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h4><p>做了统一整合，提供了三种磁盘加密方式</p>
+<ul>
+<li>无加密</li>
+<li>单密钥加密</li>
+<li>多密钥加密：可以用密钥A给设备加密，用额外的密钥B给部分数据加密</li>
 </ul>
-</li>
-<li>Inactive<ul>
-<li>The app is running in the foreground but is currently not receiving events. (It may be executing other code though.) An app usually stays in this state only briefly as it transitions to a different state.</li>
-</ul>
-</li>
-<li>Active<ul>
-<li>The app is running in the foreground and is receiving events. This is the normal mode for foreground apps.</li>
-</ul>
-</li>
-<li>Background<ul>
-<li>The app is in the background and executing code. Most apps enter this state briefly on their way to being suspended. However, an app that requests extra execution time may remain in this state for a period of time. In addition, an app being launched directly into the background enters this state instead of the inactive state. For information about how to execute code while in the background, see Background Execution.</li>
-</ul>
-</li>
-<li>Suspended<ul>
-<li>The app is in the background but is not executing code. The system moves apps to this state automatically and does not notify them before doing so. While suspended, an app remains in memory but does not execute any code.<br>When a low-memory condition occurs, the system may purge suspended apps without notice to make more space for the foreground app.</li>
-</ul>
-</li>
-</ul>
+<h3 id="Crash-Pretection"><a href="#Crash-Pretection" class="headerlink" title="Crash Pretection"></a>Crash Pretection</h3><p>APFS 引入了 Copy on write 机制，编辑文件时原有数据不会被当即修改，修改会有一个临时文件，只有确定文件修改完成后才会覆盖旧的文件。再也不用担心文件没有保存了。</p>
+<h2 id="苹果为什么要更新APFS"><a href="#苹果为什么要更新APFS" class="headerlink" title="苹果为什么要更新APFS ?"></a>苹果为什么要更新APFS ?</h2><h4 id="支持最新的软硬件技术"><a href="#支持最新的软硬件技术" class="headerlink" title="支持最新的软硬件技术"></a>支持最新的软硬件技术</h4><p>现在的HFS+和前任HFS（Hierarchical File System）当时是针对软盘和机械硬盘设计的，已经不能在最新的存储技术上有好的发挥，反而有些地方已经成为了累赘。同时针对移动互联网的使用场景和形态做了数据安全性的优化。</p>
+<h4 id="协调统一生态系统"><a href="#协调统一生态系统" class="headerlink" title="协调统一生态系统"></a>协调统一生态系统</h4><p>在全系产品上做到统一，都使用APFS，对开发者会更友好一点。</p>
+<h2 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h2><p>1.<a href="https://sspai.com/post/38377" target="_blank" rel="external">升级iOS 10.3之后存储空间变多了？这都是APFS的功劳</a><br>2.<a href="https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/APFS_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40016999-CH1-DontLinkElementID_27" target="_blank" rel="external">Apple File System Guide</a><br>3.<a href="https://zh.wikipedia.org/wiki/固态硬盘" target="_blank" rel="external">固态硬盘</a><br>4.<a href="https://zh.wikipedia.org/wiki/%E9%97%AA%E5%AD%98#NAND_Flash" target="_blank" rel="external">闪存</a></p>
 
       
     </div>
@@ -395,9 +379,7 @@ The app is running in the foreground but is currently not receiving events. (It 
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag"># iOS</a>
-          
-            <a href="/tags/App/" rel="tag"># App</a>
+            <a href="/tags/File-System/" rel="tag"># File System</a>
           
         </div>
       
@@ -410,8 +392,8 @@ The app is running in the foreground but is currently not receiving events. (It 
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/09/Designated和Secondary(Convenience)初始化方法/" rel="next" title="Designated和Secondary(Convenience)初始化方法">
-                <i class="fa fa-chevron-left"></i> Designated和Secondary(Convenience)初始化方法
+              <a href="/2017/03/30/如何用Reveal查看任意APP界面/" rel="next" title="如何用Reveal查看任意APP界面">
+                <i class="fa fa-chevron-left"></i> 如何用Reveal查看任意APP界面
               </a>
             
           </div>
@@ -419,10 +401,6 @@ The app is running in the foreground but is currently not receiving events. (It 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/28/Joel Test/" rel="prev" title="Joel Test">
-                Joel Test <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -549,7 +527,7 @@ The app is running in the foreground but is currently not receiving events. (It 
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS执行状态"><span class="nav-number">1.</span> <span class="nav-text">iOS执行状态</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下面我们来简单聊聊APFS带来了哪些改变。"><span class="nav-number">1.</span> <span class="nav-text">下面我们来简单聊聊APFS带来了哪些改变。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件克隆（Clone）-复制不再占用空间"><span class="nav-number">1.0.1.</span> <span class="nav-text">文件克隆（Clone）,复制不再占用空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#磁盘快照（Snapshot）"><span class="nav-number">1.0.2.</span> <span class="nav-text">磁盘快照（Snapshot）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空间共享（Space-Sharing）"><span class="nav-number">1.0.3.</span> <span class="nav-text">空间共享（Space Sharing）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提升了服务质量（I-O-QoS）"><span class="nav-number">1.0.4.</span> <span class="nav-text">提升了服务质量（I/O QoS）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安全"><span class="nav-number">1.0.5.</span> <span class="nav-text">安全</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crash-Pretection"><span class="nav-number">1.1.</span> <span class="nav-text">Crash Pretection</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#苹果为什么要更新APFS"><span class="nav-number">2.</span> <span class="nav-text">苹果为什么要更新APFS ?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持最新的软硬件技术"><span class="nav-number">2.0.1.</span> <span class="nav-text">支持最新的软硬件技术</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#协调统一生态系统"><span class="nav-number">2.0.2.</span> <span class="nav-text">协调统一生态系统</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ref"><span class="nav-number">3.</span> <span class="nav-text">ref</span></a></li></ol></div>
             
 
           </div>

@@ -105,7 +105,7 @@
 原子性（atomic,nonatomic）
 读写权限（readwrite,readonly）
 内存管理语义（">
-<meta property="og:updated_time" content="2017-03-13T15:04:33.000Z">
+<meta property="og:updated_time" content="2017-05-16T12:37:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS中属性的解读">
 <meta name="twitter:description" content="为什么要有属性？属性是由实例变量来实现的，但却提供了一个简洁的抽象机制。编译器一般会自动生成一套存取方法，用来访问给定类型中具体给定名称的变量。简单的理解就是，属性是方便生成，操作实例变量的一个手段。property = ivar + getter + setter。
@@ -361,6 +361,28 @@
 <h2 id="内存管理语义"><a href="#内存管理语义" class="headerlink" title="内存管理语义"></a>内存管理语义</h2><p>编译器在生成setter方法的时候，要根据这个语义生成不同的代码。不影响getter方法。<br><code>assign</code>: 设置方法只会执行针对“纯量类型”的简单复制操作，一般都来修饰非对象的类型。在MRC中也用来修饰对象，与现在ARC中的unsafe_unretained语义一样。<br><code>strong</code>: 拥有关系，setter的时候会先保留新值，释放旧值，然后再将新值设置上去。<br><code>weak</code>: 非拥有关系，setter的时候既不保留新值，也不释放旧值，在属性所指的对象遭到销毁的时候，属性值也会清空，变为nil。<br><code>unsafe_unretained</code>: 语义同assign差不多，但是适用于修饰对象类型。非拥有关系（unretained不保留），当所执行的对象遭到销毁的时候，属性值不会自动清空（unsafe）。<br><code>copy</code>: setter不保留新值，而是将其拷贝（copy）。一般NSString，NSArray和NSDictionary用copy比较多。这里来举例说下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *strongString;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>  ) <span class="built_in">NSString</span> *copiedString;</div><div class="line"></div><div class="line"><span class="comment">//用copy来保证其封装性</span></div><div class="line"><span class="built_in">NSMutableString</span> *mutableString = [[<span class="built_in">NSMutableString</span> alloc] initWithString:<span class="string">@"hello world"</span>];</div><div class="line"><span class="keyword">self</span>.strongString = mutableString;</div><div class="line"><span class="keyword">self</span>.copiedString = mutableString;</div><div class="line"></div><div class="line">(lldb) p mutableString</div><div class="line">(__NSCFString *) $<span class="number">1</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.strongString</div><div class="line">(__NSCFString *) $<span class="number">2</span> = <span class="number">0x000060000007c680</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p <span class="keyword">self</span>.copiedString</div><div class="line">(__NSCFString *) $<span class="number">3</span> = <span class="number">0x000060000003a920</span> <span class="string">@"hello world"</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">4</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.copiedString isMemberOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">5</span> = <span class="literal">NO</span></div><div class="line">(lldb) p [<span class="keyword">self</span>.strongString isKindOfClass:[objc_getClass(<span class="string">"__NSCFString"</span>) <span class="keyword">class</span>]]</div><div class="line">(<span class="built_in">BOOL</span>) $<span class="number">8</span> = <span class="literal">YES</span></div><div class="line">(lldb) p <span class="string">@"hello"</span></div><div class="line">(<span class="built_in">NSTaggedPointerString</span> *) $<span class="number">6</span> = <span class="number">0xa00006f6c6c65685</span> <span class="string">@"hello"</span></div><div class="line"><span class="comment">//stongString的地址和mutableString的地址一样，copiedString地址是新的。</span></div><div class="line"><span class="comment">//有一点值得注意是__NSCFString，很明显NSString下面另有黑幕。随后会详细介绍。</span></div></pre></td></tr></table></figure></p>
 <h2 id="方法名"><a href="#方法名" class="headerlink" title="方法名"></a>方法名</h2><p><code>getter=&lt;name&gt;</code>: 指定“获取方法”的方法名。常用如下<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">getter</span>=isOn) <span class="built_in">BOOL</span> on;</div></pre></td></tr></table></figure></p>
 <p><code>setter=&lt;name&gt;</code>: 指定“设置方法”的方法名。一般不怎么用。</p>
+<h2 id="从-NSCFConstantString和-NSCFString-NSTaggedPointerString说起"><a href="#从-NSCFConstantString和-NSCFString-NSTaggedPointerString说起" class="headerlink" title="从__NSCFConstantString和__NSCFString,NSTaggedPointerString说起"></a>从<code>__NSCFConstantString</code>和<code>__NSCFString</code>,<code>NSTaggedPointerString</code>说起</h2><ul>
+<li><code>__NSCFConstantString</code></li>
+</ul>
+<p><code>__NSCFConstantString</code>对象，就是字符串常量对象，存储在栈上。创建之后由系统来管理内存。相同内容的<code>__NSCFConstantString</code>对象地址相同。该对象的引用计数很大，为固定值不会变。当创建一个<code>__NSCFConstantString</code>对象时，会检测这个字符串内容是否存在，如果存在，则直接将地址赋值给变量，不存在的话，则创建新的地址，再赋值。只要字符串内容不变，就不会分配新的内存地址，这种优化可以节省内存，提高性能。</p>
+<ul>
+<li><code>__NSCFStrign</code></li>
+</ul>
+<p><code>__NSCFStrign</code>对象是NSString的一个子类，存储在栈上，不属于字符创常量对象。使用<code>[NSString stringWithFormat:]</code>和<code>NSMutableString</code>创建的字符串等都是这种对象。</p>
+<ul>
+<li><code>NSTaggedPointerString</code></li>
+</ul>
+<p>为什么要引入 Tagged Pointer ?<br>原有对象会造成内存浪费。假设我们存储NSNumber对象，其值是NSInteger。正常情况下，他所占用的内存是跟CPU的位数有关系的，在32位上是4个字节，在64位上是8个字节。指针的大写也跟CPU的位数有关系，在32位上4个字节，64位上是8个字节。如果没有 Tagged Pointer，像NSNumber和NSDate这些对象内存直接翻倍。</p>
+<p>因此，苹果提出了Tagged Pointer，它是一个能够提升性能，节省内存的又去技术。我们都知道，程序使用了指针地址对齐的概念。指针地址对齐就是指分配在堆中的内存对象往往采用偶数倍或以2为指数倍的内存地址作为地址边界。</p>
+<p>苹果将Tagged Pointer引入，给64位系统带来了内存的节省和运行效率的提高。Tagged Pointer通过在其最后一个bit位设置一个特殊标记，用于将数据直接保存在指针本身中。因为Tagged Pointer并不是真正的对象，我们在使用时需要注意不要直接访问其isa变量。</p>
+<blockquote>
+<p>我们也可以在WWDC2013的《Session 404 Advanced in Objective-C》视频中，看到苹果对于Tagged Pointer特点的介绍：</p>
+<ul>
+<li>Tagged Pointer专门用来存储小的对象，例如NSNumber和NSDate</li>
+<li>Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储在堆中，也不需要malloc和free。</li>
+<li>在内存读取上有着3倍的效率，创建时比以前快106倍。</li>
+</ul>
+</blockquote>
 
       
     </div>
@@ -536,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有属性？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有属性？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原子性"><span class="nav-number">2.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写权限"><span class="nav-number">3.</span> <span class="nav-text">读写权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存管理语义"><span class="nav-number">4.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法名"><span class="nav-number">5.</span> <span class="nav-text">方法名</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有属性？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有属性？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原子性"><span class="nav-number">2.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写权限"><span class="nav-number">3.</span> <span class="nav-text">读写权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存管理语义"><span class="nav-number">4.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法名"><span class="nav-number">5.</span> <span class="nav-text">方法名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从-NSCFConstantString和-NSCFString-NSTaggedPointerString说起"><span class="nav-number">6.</span> <span class="nav-text">从__NSCFConstantString和__NSCFString,NSTaggedPointerString说起</span></a></li></ol></div>
             
 
           </div>
